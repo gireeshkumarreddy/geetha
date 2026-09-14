@@ -6,9 +6,9 @@
   <meta name="theme-color" content="#f4eee4">
   <title>Geetha Jewellers — Collections</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Great+Vibes&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="preload" as="font" href="fonts/cormorant-garamond-latin-500-normal.woff2" type="font/woff2" crossorigin>
+  <link rel="preload" as="font" href="fonts/jost-latin-400-normal.woff2" type="font/woff2" crossorigin>
 
   <!-- hero assets first -->
   <link rel="preload" as="image" href="images/bg-stage.webp" type="image/webp">
@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="css/rings.css">
   <link rel="stylesheet" href="css/earrings.css">
   <link rel="stylesheet" href="css/bangles.css">
+  <link rel="stylesheet" href="css/mens.css">
   <link rel="stylesheet" href="css/offer.css">
   <link rel="stylesheet" href="css/store.css">
   <link rel="stylesheet" href="css/app.css">
@@ -103,6 +104,7 @@
           <nav class="gj-nav gj-nav--left" aria-label="Primary">
             <a href="#" class="is-active">Home</a>
             <a href="#collections">Collections</a>
+            <a href="#mens-collections">For Him</a>
             <a href="#our-story">About Us</a>
           </nav>
           <a class="gj-logo" href="#" aria-label="Geetha Jewellers — home">
@@ -139,6 +141,8 @@
     <ul class="gj-menu__list">
       <li><a href="#">Home</a></li>
       <li><a href="#collections">Collections</a></li>
+      <li><a href="#mens-collections">Men&rsquo;s Jewellery</a></li>
+      <li><a href="#mens-wristwear">Men&rsquo;s Rings &amp; Wristwear</a></li>
       <li><a href="#our-story">About Us</a></li>
       <li><a href="#">Contact</a></li>
       <li><a href="#">Terms</a></li>
@@ -927,6 +931,116 @@
     </div>
   </section>
 
+
+  <!-- MEN'S EDIT 01 — separate jewellery layers, shared scroll progress,
+       gold/silver browsing, keyboard controls, and mobile flow. -->
+  <section class="gjm gjm--chains" id="mens-collections" data-mens data-products="curb,rope,pendant" data-metal="gold" data-progress data-pn-start="0.12" data-pn-span="0.44" aria-labelledby="mens-collections-title">
+    <div class="gjm__track">
+      <div class="gjm__stage" data-sticky>
+        <figure class="gjm__environment" aria-hidden="true"><img src="images/mens-showroom.webp" alt="" width="1536" height="864" loading="lazy" decoding="async"></figure>
+        <p class="gjm__chapter" data-m-reveal><span class="gjm__chapter-label">The Men&rsquo;s Edit &nbsp; / &nbsp; 01</span><span class="gjm__chapter-line" aria-hidden="true"></span><a href="#mens-wristwear">Rings &amp; Wristwear <span aria-hidden="true">↗</span></a></p>
+        <div class="gjm__copy" data-m-reveal style="--md:.08s">
+          <p class="gjm__eyebrow">Chains &amp; Pendants</p>
+          <h2 class="gjm__title" id="mens-collections-title">A signature<br> of his own.</h2>
+          <span class="gjm__rule" aria-hidden="true"></span>
+          <p class="gjm__intro">From the everyday chain to a pendant with personal meaning. Discover enduring forms, expressed in gold and silver.</p>
+          <div class="gjm__metal" role="group" aria-label="Chains &amp; Pendants metal">
+            <button type="button" data-m-metal="gold" aria-pressed="true"><span class="gjm__swatch" aria-hidden="true"></span>Gold</button>
+            <button type="button" data-m-metal="silver" aria-pressed="false"><span class="gjm__swatch gjm__swatch--silver" aria-hidden="true"></span>Silver</button>
+          </div>
+          <div class="gjm__categories" role="group" aria-label="Chains &amp; Pendants category"><button type="button" data-m-category="all" aria-pressed="true">All designs</button><button type="button" data-m-category="chains" aria-pressed="false">Chains</button><button type="button" data-m-category="pendants" aria-pressed="false">Pendants</button></div>
+        </div>
+        <div class="gjm__art">
+          <figure class="gjm__hero" data-sweep-host>
+            <div class="gjm__hero-drift"><span class="gjm__jewel" data-m-hero style="--col:0;--row:0"><img src="images/mens-gold.webp" alt="Gold curb chain — The Classic Link" width="1536" height="1024" loading="lazy" decoding="async"></span><span class="gjm__shine" aria-hidden="true"></span></div>
+          </figure>
+          <p class="gjm__art-label" data-m-caption>Gold Curb chain · the men&rsquo;s edit</p>
+        </div>
+        <aside class="gjm__details" aria-label="Featured design" data-m-reveal style="--md:.22s">
+          <p class="gjm__detail-kicker">A closer look</p>
+          <h3 class="gjm__name" data-m-name>The Classic Link</h3>
+          <p class="gjm__description" data-m-description>Sculpted links. A confident, clean silhouette that sits just as naturally over a shirt as beneath its collar.</p>
+          <dl class="gjm__specs"><div><dt>The detail</dt><dd data-m-finish>Polished links</dd></div><div><dt>The character</dt><dd data-m-character>An everyday signature</dd></div></dl>
+          <a class="gjm__enquire" data-m-enquire href="https://wa.me/918190377014" target="_blank" rel="noopener">Enquire about this piece <span aria-hidden="true">↗</span></a>
+        </aside>
+        <div class="gjm__gallery" data-m-reveal style="--md:.35s">
+          <div class="gjm__gallery-head"><p>Find your signature</p><div class="gjm__gallery-controls"><span class="gjm__count" data-m-count>01 / 03</span><button class="gjm__arrow" type="button" data-m-prev aria-label="Previous chains &amp; pendants design">←</button><button class="gjm__arrow" type="button" data-m-next aria-label="Next chains &amp; pendants design">→</button></div></div>
+          <div class="gjm__cards" role="group" aria-label="Chains &amp; Pendants designs">
+            <button class="gjm__card" type="button" data-m-product="curb" aria-pressed="true" aria-label="View The Classic Link in gold">
+              <span class="gjm__thumb"><span class="gjm__jewel"  style="--col:0;--row:0"><img src="images/mens-gold.webp" alt="" width="1536" height="1024" loading="lazy" decoding="async"></span></span>
+              <span class="gjm__card-copy"><span class="gjm__card-index">01</span><span class="gjm__card-name">The Classic Link</span><span class="gjm__card-kind">Gold · Curb chain</span></span>
+            </button>
+            <button class="gjm__card" type="button" data-m-product="rope" aria-pressed="false" aria-label="View The Woven Rope in gold">
+              <span class="gjm__thumb"><span class="gjm__jewel"  style="--col:1;--row:0"><img src="images/mens-gold.webp" alt="" width="1536" height="1024" loading="lazy" decoding="async"></span></span>
+              <span class="gjm__card-copy"><span class="gjm__card-index">02</span><span class="gjm__card-name">The Woven Rope</span><span class="gjm__card-kind">Gold · Rope chain</span></span>
+            </button>
+            <button class="gjm__card" type="button" data-m-product="pendant" aria-pressed="false" aria-label="View The North Star in gold">
+              <span class="gjm__thumb"><span class="gjm__jewel"  style="--col:2;--row:0"><img src="images/mens-gold.webp" alt="" width="1536" height="1024" loading="lazy" decoding="async"></span></span>
+              <span class="gjm__card-copy"><span class="gjm__card-index">03</span><span class="gjm__card-name">The North Star</span><span class="gjm__card-kind">Gold · Pendant</span></span>
+            </button>
+          </div>
+        </div>
+        <p class="gjm__footnote"><em>Some details say everything.</em><span>Illustrative designs. Enquire for current availability.</span></p>
+        <p class="sr-only" role="status" aria-live="polite" aria-atomic="true" data-m-status></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- MEN'S EDIT 02 — separate jewellery layers, shared scroll progress,
+       gold/silver browsing, keyboard controls, and mobile flow. -->
+  <section class="gjm gjm--wrist" id="mens-wristwear" data-mens data-products="signet,bracelet,kada" data-metal="gold" data-progress data-pn-start="0.12" data-pn-span="0.44" aria-labelledby="mens-wristwear-title">
+    <div class="gjm__track">
+      <div class="gjm__stage" data-sticky>
+        <figure class="gjm__environment" aria-hidden="true"><img src="images/mens-showroom.webp" alt="" width="1536" height="864" loading="lazy" decoding="async"></figure>
+        <p class="gjm__chapter" data-m-reveal><span class="gjm__chapter-label">The Men&rsquo;s Edit &nbsp; / &nbsp; 02</span><span class="gjm__chapter-line" aria-hidden="true"></span><a href="#visit">Visit our store <span aria-hidden="true">↗</span></a></p>
+        <div class="gjm__copy" data-m-reveal style="--md:.08s">
+          <p class="gjm__eyebrow">Rings &amp; Wristwear</p>
+          <h2 class="gjm__title" id="mens-wristwear-title">Character in<br> every detail.</h2>
+          <span class="gjm__rule" aria-hidden="true"></span>
+          <p class="gjm__intro">A quiet statement, worn your way. Explore sculpted rings, linked bracelets and timeless kadas in gold and silver.</p>
+          <div class="gjm__metal" role="group" aria-label="Rings &amp; Wristwear metal">
+            <button type="button" data-m-metal="gold" aria-pressed="true"><span class="gjm__swatch" aria-hidden="true"></span>Gold</button>
+            <button type="button" data-m-metal="silver" aria-pressed="false"><span class="gjm__swatch gjm__swatch--silver" aria-hidden="true"></span>Silver</button>
+          </div>
+          <div class="gjm__categories" role="group" aria-label="Rings &amp; Wristwear category"><button type="button" data-m-category="all" aria-pressed="true">All</button><button type="button" data-m-category="rings" aria-pressed="false">Rings</button><button type="button" data-m-category="bracelets" aria-pressed="false">Bracelets</button><button type="button" data-m-category="kadas" aria-pressed="false">Kadas</button></div>
+        </div>
+        <div class="gjm__art">
+          <figure class="gjm__satellite gjm__satellite--left" aria-hidden="true"><span class="gjm__jewel" data-m-satellite style="--col:1;--row:1"><img src="images/mens-gold.webp" alt="" width="1536" height="1024" loading="lazy" decoding="async"></span></figure><figure class="gjm__satellite gjm__satellite--right" aria-hidden="true"><span class="gjm__jewel" data-m-satellite style="--col:2;--row:1"><img src="images/mens-gold.webp" alt="" width="1536" height="1024" loading="lazy" decoding="async"></span></figure>
+          <figure class="gjm__hero" data-sweep-host>
+            <div class="gjm__hero-drift"><span class="gjm__jewel" data-m-hero style="--col:0;--row:1"><img src="images/mens-gold.webp" alt="Gold signet ring — The Signature" width="1536" height="1024" loading="lazy" decoding="async"></span><span class="gjm__shine" aria-hidden="true"></span></div>
+          </figure>
+          <p class="gjm__art-label" data-m-caption>Gold Signet ring · the men&rsquo;s edit</p>
+        </div>
+        <aside class="gjm__details" aria-label="Featured design" data-m-reveal style="--md:.22s">
+          <p class="gjm__detail-kicker">A closer look</p>
+          <h3 class="gjm__name" data-m-name>The Signature</h3>
+          <p class="gjm__description" data-m-description>A sculpted oval face with fine engraved lines. Understated from a distance, considered in every detail.</p>
+          <dl class="gjm__specs"><div><dt>The detail</dt><dd data-m-finish>Engraved oval face</dd></div><div><dt>The character</dt><dd data-m-character>Personal by nature</dd></div></dl>
+          <a class="gjm__enquire" data-m-enquire href="https://wa.me/918190377014" target="_blank" rel="noopener">Enquire about this piece <span aria-hidden="true">↗</span></a>
+        </aside>
+        <div class="gjm__gallery" data-m-reveal style="--md:.35s">
+          <div class="gjm__gallery-head"><p>Find your signature</p><div class="gjm__gallery-controls"><span class="gjm__count" data-m-count>01 / 03</span><button class="gjm__arrow" type="button" data-m-prev aria-label="Previous rings &amp; wristwear design">←</button><button class="gjm__arrow" type="button" data-m-next aria-label="Next rings &amp; wristwear design">→</button></div></div>
+          <div class="gjm__cards" role="group" aria-label="Rings &amp; Wristwear designs">
+            <button class="gjm__card" type="button" data-m-product="signet" aria-pressed="true" aria-label="View The Signature in gold">
+              <span class="gjm__thumb"><span class="gjm__jewel"  style="--col:0;--row:1"><img src="images/mens-gold.webp" alt="" width="1536" height="1024" loading="lazy" decoding="async"></span></span>
+              <span class="gjm__card-copy"><span class="gjm__card-index">01</span><span class="gjm__card-name">The Signature</span><span class="gjm__card-kind">Gold · Signet ring</span></span>
+            </button>
+            <button class="gjm__card" type="button" data-m-product="bracelet" aria-pressed="false" aria-label="View The Linked Cuff in gold">
+              <span class="gjm__thumb"><span class="gjm__jewel"  style="--col:1;--row:1"><img src="images/mens-gold.webp" alt="" width="1536" height="1024" loading="lazy" decoding="async"></span></span>
+              <span class="gjm__card-copy"><span class="gjm__card-index">02</span><span class="gjm__card-name">The Linked Cuff</span><span class="gjm__card-kind">Gold · Link bracelet</span></span>
+            </button>
+            <button class="gjm__card" type="button" data-m-product="kada" aria-pressed="false" aria-label="View The Modern Kada in gold">
+              <span class="gjm__thumb"><span class="gjm__jewel"  style="--col:2;--row:1"><img src="images/mens-gold.webp" alt="" width="1536" height="1024" loading="lazy" decoding="async"></span></span>
+              <span class="gjm__card-copy"><span class="gjm__card-index">03</span><span class="gjm__card-name">The Modern Kada</span><span class="gjm__card-kind">Gold · Open kada</span></span>
+            </button>
+          </div>
+        </div>
+        <p class="gjm__footnote"><em>Tradition, made personal.</em><span>Illustrative designs. Enquire for current availability.</span></p>
+        <p class="sr-only" role="status" aria-live="polite" aria-atomic="true" data-m-status></p>
+      </div>
+    </div>
+  </section>
+
   <!-- ======================================================================
        SECTION 09 · OFFER → TESTIMONIALS → WHY CHOOSE US
        (Phase-02, keyframe 09 · spec §13)
@@ -1217,6 +1331,7 @@
         <ul class="gjf__links">
           <li><a href="#">Home</a></li>
           <li><a href="#collections">Collections</a></li>
+          <li><a href="#mens-collections">Men&rsquo;s Jewellery</a></li>
           <li><a href="#our-story">About Us</a></li>
           <li><a href="#visit">Contact</a></li>
         </ul>
@@ -1256,5 +1371,6 @@
   <script src="js/stage.js" defer></script>
   <script src="js/intro.js" defer></script>
   <script src="js/sections.js" defer></script>
+  <script src="js/mens.js" defer></script>
 </body>
 </html>

@@ -1,5 +1,50 @@
 # Geetha Jewellers — collection stage
 
+## Men's collections
+
+The full page now includes two men's collection sections between the existing
+bangles and offer sections. **For Him** in the header, the full-screen menu,
+and the footer link directly to the new chapter.
+
+- `#mens-collections`: curb chains, rope chains, and pendants, in gold and silver.
+- `#mens-wristwear`: signet rings, link bracelets, and open kadas, in gold and silver.
+- `css/mens.css` provides the ivory showroom composition, separate product
+  layers, compact collection cards, and responsive layouts.
+- `js/mens.js` handles metal/category filtering, synchronized product details,
+  previous/next and keyboard selection, and a prefilled WhatsApp enquiry for
+  the selected design. It does not send messages automatically.
+- Existing `js/sections.js` drives the reversible scroll emergence and light
+  sweep. The wristwear companions fan out as the selected piece approaches.
+  Browsing gently cycles only while visible, with pauses for hover, focus,
+  touch, manual selection, hidden tabs, and reduced-motion preferences.
+- Mobile uses a normal document flow. Reduced motion removes pinning, product
+  transforms, and autoplay while retaining every collection control.
+
+The six designs are **illustrative concepts**, each available as gold and
+silver artwork. No stock, purity, price, weight, or product certification is
+asserted. Replace the concepts and descriptions with the client's approved
+catalogue before presenting them as actual merchandise. The enquiry link uses
+the same store WhatsApp number already present elsewhere in the page.
+
+`images/mens-gold.webp` and `images/mens-silver.webp` are transparent 3-column,
+2-row atlases. The cells are curb chain, rope chain, pendant, signet ring,
+bracelet, and kada, read left-to-right and then top-to-bottom. The clean
+`images/mens-showroom.webp` plate stays independent of the jewellery and all
+text is live HTML. The three assets total approximately **647 KiB**.
+The built-in image-generation prompts are preserved in
+`tools/mens-artwork-prompts.json`.
+
+The original Cinzel, Cormorant Garamond, Jost, and Great Vibes typefaces are
+now served locally through `css/fonts.css`; their redistribution licences
+are included in `fonts/`. No framework, build step, or production JavaScript
+dependency was added. Use the same static server command below to view the
+whole website. A local HTTP server is recommended for font preloads and CSS
+image masks; direct `file://` viewing can restrict those resources.
+
+The pre-existing app-store, legal, and social placeholder destinations remain
+part of the original site; this update adds collection browsing and enquiries,
+not checkout or an inventory backend.
+
 **Phase 01 · Cinematic Intro** (overlay `#gjintro`, css/intro.css,
 js/intro.js, tools/build_intro_assets.py) — APPROVED. The
 ~2.8s brand film from the Phase-01 master document: near-black → a gold
