@@ -5,7 +5,7 @@
   'use strict';
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
   const finePointer = window.matchMedia('(pointer: fine)');
-  const atlas = { gold: 'images/mens-gold.webp', silver: 'images/mens-silver.webp' };
+  const atlas = { gold: 'images/mens-gold-refined.png', silver: 'images/mens-silver-refined.png' };
   const products = {
     curb: { name: 'The Classic Link', category: 'chains', label: 'Curb chain', cell: 0, detail: 'Sculpted links. A confident, clean silhouette that sits just as naturally over a shirt as beneath its collar.', finish: 'Polished links', character: 'An everyday signature' },
     rope: { name: 'The Woven Rope', category: 'chains', label: 'Rope chain', cell: 1, detail: 'Fine strands, closely woven. A textured chain that catches the light with every movement.', finish: 'Twisted rope texture', character: 'Quietly distinctive' },

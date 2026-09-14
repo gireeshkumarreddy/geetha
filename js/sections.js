@@ -288,7 +288,7 @@
     });
     el.addEventListener('pointermove', (e) => {
       if (!dragging) return;
-      const deg = clamp((e.clientX - startX) / 38, -5.5, 5.5);
+      const deg = clamp((e.clientX - startX) / 70, -2, 2);
       el.style.transform = `rotate(${deg.toFixed(2)}deg)`;
     });
     const release = () => {

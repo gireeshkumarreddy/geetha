@@ -1,0 +1,148 @@
+/* September refinement pass: retain scene coordinates and the original intro.
+   Never use sharpening or blur to disguise limited photographic sources. */
+.gj-official-logo { display:block; width:100%; height:auto; object-fit:contain; }
+:is(.gjn__cta,.gjr__cta,.gje__cta,.gjbn__cta,.gjo__a-cta,.gjo__btn,.gjv__dirbtn) {
+  box-sizing:border-box; min-height:44px; padding:10px 19px; font-size:12px;
+  line-height:1.5; letter-spacing:.09em; border-radius:2px;
+  box-shadow:none; background:#a9853c; color:#fffdf7;
+}
+:is(.gjn__cta,.gjr__cta,.gje__cta,.gjbn__cta,.gjo__a-cta,.gjo__btn,.gjv__dirbtn):is(:hover,:focus-visible) {
+  box-shadow:none; background:#88682f; filter:none;
+}
+.gjo__btn--ghost { background:transparent; color:#6b4d1e; }
+.gjo__btn svg { width:16px; height:16px; }
+.gj-about__cta a,.gjm__enquire { font-size:12px; min-height:44px; box-sizing:border-box; align-content:center; }
+:is(a,button):focus-visible { outline:2px solid #77551e; outline-offset:4px; }
+.gjn__neck-move { filter:none; transform:translate3d(-50%,calc((1 - var(--pn,0)) * 3%),0) scale(calc(.9 + .1 * var(--pn,0))); will-change:transform,opacity; }
+.gjn__sweep i { opacity:.48; }
+.gj-about__scene-par { inset:0; }
+.gj-about__scene-par img { object-fit:cover; }
+.js .gj-about [data-reveal="left"] { transform:translateX(-16px); }
+.js .gj-about [data-reveal="left"].is-in { transform:none; }
+/* Move the complete ring environment and pieces together, retaining alignment. */
+@media(min-width:1024px) {
+ .gjr__scene { width:max(92vw,158svh); top:54%; }
+ .gjr__stage { background:#f5efe2; }
+ .gjr__thumb.is-active .gjr__thumb-disc,.gjr__thumb.is-active:hover .gjr__thumb-disc { transform:scale(1.06); }
+}
+.gje__panel:hover .gje__hang,.gje__panel:focus-visible .gje__hang { transform:translateY(-3px); }
+/* A single coordinate system for closed bud, open petals and both metals. */
+.gjbn__scene > picture,.gjbn__bg7,.gjbn__bg8,.gjbn__bud,.gjbn__bangle { translate:0 0; }
+.gjbn__bg7 img,.gjbn__bg8 img { transform:none; }
+.gjbn__bangle:not(.gjbn__bangle--s) picture { filter:none; transform:none; }
+.gjbn__bangle--s picture { filter:none; }
+.gjbn__bangle--s > div { transform:none; opacity:var(--sw,0); }
+.gjbn__bangle--sb4,.gjbn__bangle--sb5 { --sw:var(--wo); --wo:min(1,max(0,calc((var(--p,0) - .575) / .07))); }
+.gjbn__bangle--sb2,.gjbn__bangle--sb3 { --sw:var(--wo); --wo:min(1,max(0,calc((var(--p,0) - .615) / .07))); }
+.gjbn__bangle--sb1 { --sw:var(--wo); --wo:min(1,max(0,calc((var(--p,0) - .655) / .07))); }
+.gjbn__sheen { background:linear-gradient(100deg,transparent 12%,rgba(255,249,231,.22) 50%,transparent 88%); }
+.gjm__title { color:#533b1c; font-size:clamp(42px,4vw,64px); }
+.gjm__eyebrow,.gjm__chapter,.gjm__detail-kicker,.gjm__gallery-head p { color:#654b25; }
+.gjm__intro,.gjm__description,.gjm__categories button { color:#594a36; }
+.gjm__copy,.gjm__details { text-shadow:0 1px 0 #fff9ed; }
+.gjm__hero { transform:translate3d(0,calc((1 - var(--pn,1)) * 20px),0) scale(calc(.92 + var(--pn,1) * .08)); }
+.gjm__card { border-radius:1px; box-shadow:none; }
+.gjm__card:hover { transform:translateY(-2px); }
+.gjm__card-name { font-size:19px; }
+.gjm__arrow { min-width:44px; min-height:44px; border-radius:2px; }
+.gjm__metal button,.gjm__categories button { min-height:44px; }
+@media(min-width:901px) { .gjm__thumb { flex-basis:88px; height:88px; } }
+.gjo__a-media img,.gjo__d-media img { transform:none; }
+.js .gjo__a:not(.is-in) .gjo__a-media img,.js .gjo__d:not(.is-in) .gjo__d-media img { transform:translateY(8px); }
+.js .gjo__a:not(.is-in) .gjo__badge,.js .gjo__c:not(.is-in) .gjo__chip { transform:scale(.96); }
+/* Official artwork covers the incorrect baked monogram as well as the text. */
+.gjo__d-brand { left:66%; top:5%; width:23%; margin:0; }
+.gjo__d-brand img { max-height:310px; }
+.gjo__d-mob .gjo__d-brand { left:13%; top:3%; width:53%; }
+.gjv__panel { background:#f7efdf; color:#4a3a22; border:1px solid #d6c39f; border-radius:4px; box-shadow:0 8px 24px #6b4d1e12; padding:20px 24px; }
+.gjv__brand { margin:0 0 14px; }
+.gjv__brand img { width:144px; max-height:112px; }
+.gjv__rows b { font-size:10px; color:#77582a; letter-spacing:.12em; }
+.gjv__rows span { font-size:13px; color:#554631; }
+.gjv__rows li { gap:12px; margin-bottom:14px; }
+.gjv__rows i { width:28px; height:28px; flex:0 0 28px; background:#eddfc4; }
+.gjv__dir { padding-top:10px; }
+.gjf__mono { width:150px; }
+/* One cohesive app section, same serif system; all information stays visible. */
+.gja__band { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr); gap:28px 36px; padding:64px max(6%,calc((100% - 1320px)/2)); aspect-ratio:auto; }
+.gja__copy { position:relative; inset:auto; width:auto; grid-column:1; grid-row:1; }
+.gja__scene { position:relative; inset:auto; width:100%; max-width:420px; align-self:center; justify-self:center; grid-column:2; grid-row:1; }
+.gja__h2 { font-size:clamp(38px,4vw,58px); }
+.gja__eyebrow { font-size:11px; white-space:normal; }
+.gja__sub { font-size:22px; }
+.gja__desc { font-size:14px; line-height:1.7; }
+.gja__feats b { font-size:12px; }
+.gja__feats span { font-size:12px; }
+.gja__store-btn { padding:8px 13px; min-height:44px; border-radius:3px; box-shadow:none; }
+.gja__store-btn svg { width:24px; height:24px; }
+.gja__store-btn b { font-size:16px; }
+.gja__store-btn small { font-size:9px; }
+.gja__qr-row img { width:72px; height:72px; }
+.gja__qr-note,.gja__quote { font-size:12px; }
+.gja__more { grid-column:1/-1; padding:0; margin:0; }
+.gja__more-panel { padding:22px 0 0; border:0; border-top:1px solid #d6c39f; border-radius:0; box-shadow:none; background:transparent; }
+.gja__more-h { font-size:26px; }
+.gja__benefit i { width:36px; height:36px; }
+@media(max-width:1023px) {
+ .gjv__panel { height:auto; padding:24px; }
+ .gja__band { display:flex; flex-direction:column; padding:44px 7%; gap:28px; }
+ .gja__scene { width:75%; max-width:300px; order:2; }
+ .gja__copy { order:1; }
+ .gja__more { order:3; }
+ .gja__more-panel { gap:20px; }
+ .gja__stores { flex-wrap:wrap; gap:10px; }
+ .gjo__d-brand img { max-height:none; }
+}
+@media(prefers-reduced-motion:reduce) {
+ .gjn__neck-move,.gjm__hero { transform:none; opacity:1; }
+ .gjn__neck-move { transform:translateX(-50%); }
+ .gje__hang { animation:none; rotate:none; }
+ .gjbn__bangle--s > div { opacity:1; }
+}
+
+/* Each material uses the same fixed display box and contact point. */
+.gjbn__bangle--b1,.gjbn__bangle--sb1 { aspect-ratio:261/523; }
+.gjbn__bangle--b2,.gjbn__bangle--sb2 { aspect-ratio:274/423; }
+.gjbn__bangle--b3,.gjbn__bangle--sb3 { aspect-ratio:252/439; }
+.gjbn__bangle--b4,.gjbn__bangle--sb4 { aspect-ratio:231/349; }
+.gjbn__bangle--b5,.gjbn__bangle--sb5 { aspect-ratio:201/330; }
+.gjbn__bangle > div,.gjbn__bangle picture { width:100%; height:100%; }
+.gjbn__bangle img { width:100%; height:100%; object-fit:contain; object-position:center bottom; }
+.gjv__panel { height:auto; }
+.gjv__rows { gap:14px; }
+.gjv__rows li { margin:0; }
+.gjv__dirbtn { width:fit-content; }
+.gja__feats { gap:16px 20px; margin-bottom:20px; }
+.gja__feats i { width:34px; height:34px; margin-bottom:8px; }
+.gja__stores { margin-bottom:18px; }
+.gja__qr-row { margin:0; }
+@media(min-width:1024px) {
+ .gja__band { padding-top:44px; padding-bottom:40px; gap:22px 36px; }
+ .gja__scene { max-width:350px; }
+ .gja__h2 { font-size:48px; }
+ .gja__desc { margin-bottom:18px; }
+ .gja__more-panel { display:grid; grid-template-columns:1.2fr 1fr 1fr 1fr; gap:16px; }
+ /* Extend the backdrop to the edges while the ring display moves back. */
+ .gjr__scene { width:max(100vw,158svh); }
+}
+@media(max-width:1023px) {
+ .gja__copy { padding:0; margin:0; }
+ .gja__scene { margin:0 auto; }
+ .gja__qr-row { flex-wrap:wrap; gap:12px; }
+ .gja__feats { gap:16px; }
+ .gja__stores { flex-direction:row; }
+ .gja__more-panel { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px 8px; }
+ .gja__more-panel > div:first-child { grid-column:1/-1; }
+ .gja__benefit { padding:0; }
+ .gja__benefit b { font-size:11px; letter-spacing:.02em; }
+ .gja__benefit span { font-size:11px; }
+ .gja__benefit::before { display:none; }
+}
+
+/* Studio photographs retain the ivory palette; no fake transparency. */
+.gjm__art { mix-blend-mode:multiply; }
+.gjm__hero .gjm__jewel,.gjm__satellite .gjm__jewel { border-radius:0; }
+.gjm__shine { display:none; } /* alpha-only sweep is unsuitable for studio plates */
+.gjm__card .gjm__jewel { mix-blend-mode:multiply; }
+.gjm__satellite--left { transform:translateX(calc((1 - var(--pn,1)) * 24px)); }
+.gjm__satellite--right { transform:translateX(calc((1 - var(--pn,1)) * -24px)); }

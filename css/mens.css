@@ -5,14 +5,14 @@
   --m-gold: #a9853c;
   --m-ink: #4a3a22;
   --m-body: #7a6a52;
-  --m-atlas: url('../images/mens-gold.webp');
+  --m-atlas: url('../images/mens-gold-refined.png');
   position: relative;
   background: var(--m-ivory);
   color: var(--m-ink);
   font-family: 'Jost', 'Segoe UI', sans-serif;
   isolation: isolate;
 }
-.gjm[data-metal='silver'] { --m-atlas: url('../images/mens-silver.webp'); }
+.gjm[data-metal='silver'] { --m-atlas: url('../images/mens-silver-refined.png'); }
 .gjm *, .gjm *::before, .gjm *::after { box-sizing: border-box; }
 .gjm button, .gjm a { -webkit-tap-highlight-color: transparent; }
 .gjm button { font: inherit; color: inherit; cursor: pointer; }

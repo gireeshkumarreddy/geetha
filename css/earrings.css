@@ -92,8 +92,8 @@
 }
 
 @keyframes gje-sway {
-  from { rotate: calc(var(--swayr, 1.2deg) * -1); }
-  to   { rotate: var(--swayr, 1.2deg); }
+  from { rotate: calc(var(--swayr, 1.2deg) * -0.45); }
+  to   { rotate: calc(var(--swayr, 1.2deg) * .45); }
 }
 
 .gje__hang img {
