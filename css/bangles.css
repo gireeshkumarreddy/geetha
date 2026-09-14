@@ -135,28 +135,28 @@
    about the bud's base centre, outer groups further than inner ones */
 .gjbn__bud img:nth-child(1) {
   clip-path: inset(0 66% 0 0);
-  transform-origin: 147% 100%;
-  transform: rotate(calc(var(--po) * -62deg)) translateY(calc(var(--po) * 5%));
+  transform-origin: 50% 100%;
+  transform: rotate(calc(var(--po) * -38deg)) translateY(calc(var(--po) * 5%));
 }
 
 .gjbn__bud img:nth-child(2) {
   /* inner-left petal group - the finial column (42-58% above 24%) is excluded
      so the gold cap never splits; it lifts away whole via the fifth layer */
   clip-path: polygon(30% 0, 43% 0, 43% 18%, 52% 18%, 52% 100%, 30% 100%);
-  transform-origin: 91% 100%;
-  transform: rotate(calc(var(--po) * -30deg)) translateY(calc(var(--po) * 3%));
+  transform-origin: 50% 100%;
+  transform: rotate(calc(var(--po) * -20deg)) translateY(calc(var(--po) * 3%));
 }
 
 .gjbn__bud img:nth-child(3) {
   clip-path: polygon(57% 0, 70% 0, 70% 100%, 48% 100%, 48% 18%, 57% 18%);
-  transform-origin: 9% 100%;
-  transform: rotate(calc(var(--po) * 30deg)) translateY(calc(var(--po) * 3%));
+  transform-origin: 50% 100%;
+  transform: rotate(calc(var(--po) * 20deg)) translateY(calc(var(--po) * 3%));
 }
 
 .gjbn__bud img:nth-child(4) {
   clip-path: inset(0 0 0 66%);
-  transform-origin: -47% 100%;
-  transform: rotate(calc(var(--po) * 62deg)) translateY(calc(var(--po) * 5%));
+  transform-origin: 50% 100%;
+  transform: rotate(calc(var(--po) * 38deg)) translateY(calc(var(--po) * 5%));
 }
 
 /* the gold finial lifts away whole (never split between the petal groups) */

@@ -1,0 +1,8 @@
+{
+  "workflow": "built-in image generation",
+  "gold": "Use case: product-mockup. Create an exceptionally crisp luxury men's jewellery product photography atlas, wide 3:2 composition, 3 equal columns and 2 equal rows, six separate objects each fully contained in its own equal square cell with generous transparent margins. Genuine transparent background, no floor, no boxes, no text, no logos. Top row left: polished substantial yellow gold curb chain arranged as long oval loop. Top middle: finely twisted yellow gold rope chain long oval loop. Top right: gold compass sunburst engraved round pendant with bail. Bottom left: gold oval engraved signet ring three-quarter view. Bottom middle: interlocking gold curb bracelet with believable clasp arranged oval. Bottom right: brushed gold open kada, softly squared polished ends, three-quarter view. Precisely rendered gold texture, authentic workmanship, controlled soft champagne studio reflections, product focus sharp edge to edge without blur, clean premium Indian heritage aesthetic, no dramatic flares. Highest available native resolution. Each item stays strictly in its grid cell, isolated, not touching any other.",
+  "gold_background": "Replace brown backdrop with uniform ivory #f6f0e4; preserve all six product shapes and positions.",
+  "silver": "Matching sterling silver material variant; preserve positions, geometry, engravings and ivory background.",
+  "resolution": "1536x1024; not native 4K",
+  "rejected": "Brown background and simulated checkerboard variants were rejected."
+}
