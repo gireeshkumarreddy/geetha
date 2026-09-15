@@ -47,15 +47,13 @@
     y: [0, -0.08, -0.11, -0.13],       // × stage height (up = further back on the floor)
     scale: [1, 0.72, 0.55, 0.45],
     opacity: [1, 0.86, 0.42, 0],
-    blur: [0, 1.4, 3, 5],              // px
-    bright: [1, 0.965, 0.93, 0.9],
+    bright: [1, 0.965, 0.93, 0.9],     // depth is read from scale/opacity only - never blur, the jewellery stays sharp
   };
   const COMPACT = {
     x: [0, 0.4, 0.66, 0.8],
     y: [0, -0.09, -0.12, -0.14],
     scale: [1, 0.56, 0.42, 0.35],
     opacity: [1, 0.55, 0, 0],
-    blur: [0, 1.2, 2, 2],
     bright: [1, 0.95, 0.92, 0.9],
   };
 
@@ -156,7 +154,9 @@
   function measure() {
     const rect = track.getBoundingClientRect();
     trackTop = rect.top + window.scrollY;
-    travel = Math.max(1, track.offsetHeight - stage.offsetHeight);
+    // the track carries one extra stage-height at its end: the curtain hold, during
+    // which the stage stays pinned while the next section rises over it
+    travel = Math.max(1, track.offsetHeight - stage.offsetHeight * 2);
     W = stage.clientWidth;
     H = stage.clientHeight;
     compact = W < 768 || (W < 1024 && H > W);
@@ -279,7 +279,7 @@
         const s = key(k.scale, a);
         opacity = key(k.opacity, a);
         transform = `translate3d(${x.toFixed(2)}px,${y.toFixed(2)}px,0) scale(${s.toFixed(4)})`;
-        filter = `blur(${key(k.blur, a).toFixed(2)}px) brightness(${key(k.bright, a).toFixed(3)})`;
+        filter = `brightness(${key(k.bright, a).toFixed(3)})`;
       }
 
       d.unit.style.transform = transform;

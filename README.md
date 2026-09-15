@@ -19,6 +19,27 @@ zero layout shift; scroll locked for the film's duration; click skips;
 the header's frosted veil was softened (0.86→0.72 white, blur 9→6) so the
 band never washes out. Everything is transform/opacity/filter.
 
+**Animation-direction + image-quality pass** (2026-09-16 brief) —
+1) *HD images*: every plate and cutout is now 2× super-resolved
+(`tools/hd_upscale.py`, FSRCNN learned upscaling + light unsharp mask,
+WebP q92–95 / PNG lossless / JPEG q92); run it after any
+`tools/build_*_assets.py` rebuild. 2) *No blur anywhere*: removed the hero
+displays' depth-of-field blur (stage.js), the necklace's blur-to-sharp
+emergence, the bangles' dissolve/emerge blur, the reflection/glint blurs
+and the header's backdrop blur — depth now reads from scale, opacity and
+light only. 3) *Hero → About curtain*: the hero track carries one extra
+viewport (`.gj-track` 200svh + travel; stage.js subtracts it from its
+choreography travel) during which the stage stays pinned and `#our-story`
+(`margin-top: -100svh`, z-index 5, top shadow) rises over it; sections.js
+writes an eased `--cover` to the hero so the stage recedes (translate/scale
++ warm veil) as it is covered. 4) *About sequence*: the section's reveals
+now wait for `.is-settled` (section top ≤ 42% of the viewport, released
+on reverse), then image + text fade up, then the Tradition box arrives
+from the LEFT and Purity from the RIGHT (Family Values and the CTA after).
+5) *Signature Collection*: milestones re-spaced into a clearer progression
+(editorial → necklace emergence → specifications → cards → cue). About's
+images load eagerly so nothing arrives late.
+
 **Final QA pass** — favicon set generated from the GJS coin
 (`favicon.ico` 16/32/48 + `images/favicon-32.png` +
 `images/apple-touch-icon.png`, linked in the head — the last console 404

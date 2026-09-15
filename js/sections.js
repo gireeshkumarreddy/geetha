@@ -66,11 +66,29 @@
     swept: false,
   }));
 
+  /* curtain sections: a section with `data-curtain="#target"` rises over the
+     pinned target (the hero stage). The target receives --cover (0..1, eased)
+     so it can recede, and the section gains .is-settled once it has fully
+     risen into place - its own choreography waits for that moment.      */
+  const curtains = Array.from(document.querySelectorAll('[data-curtain]'))
+    .map((el) => ({ el, target: document.querySelector(el.dataset.curtain) }))
+    .filter((c) => c.target);
+
   let raf = 0;
 
   function apply() {
     raf = 0;
     const vh = window.innerHeight;
+
+    for (const c of curtains) {
+      const r = c.el.getBoundingClientRect();
+      const raw = clamp((vh - r.top) / vh, 0, 1);
+      c.target.style.setProperty('--cover', (reduceMotion.matches ? raw : smooth01(raw)).toFixed(4));
+      // "settled" = the section has all but finished rising; its content
+      // sequence begins here and completes as the last of the rise lands
+      if (r.top <= vh * 0.42) c.el.classList.add('is-settled');
+      else if (r.top > vh * 0.72) c.el.classList.remove('is-settled');
+    }
 
     if (!reduceMotion.matches) {
       for (const { s, el } of layers) {
@@ -124,7 +142,7 @@
     if (!raf) raf = requestAnimationFrame(apply);
   }
 
-  if (layers.length || pins.length) {
+  if (layers.length || pins.length || curtains.length) {
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', schedule);
     apply();
