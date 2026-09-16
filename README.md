@@ -38,7 +38,19 @@ on reverse), then image + text fade up, then the Tradition box arrives
 from the LEFT and Purity from the RIGHT (Family Values and the CTA after).
 5) *Signature Collection*: milestones re-spaced into a clearer progression
 (editorial → necklace emergence → specifications → cards → cue). About's
-images load eagerly so nothing arrives late.
+images load eagerly so nothing arrives late. 6) *Crisp floors*: the
+references hide the floor under their detail cards / thumbnail rails;
+lifting those out had left diffusion-inpainted bands (necklace, gold +
+silver rings plates) that read as a smeared, blurred screen whenever the
+cards were not covering them. `tools/floor.py` (shared by the three
+builders) now rebuilds those bands as polished marble: a mask-weighted,
+strongly horizontal average of the REAL floor pixels around the holes
+(never the card/label pixels) plus a faint, fading mirror of the podium
+above the floor line — no blend, no blur, nothing real is touched. Labels,
+rules and dots are lifted with a darker-than-floor stroke gate, so the
+bokeh blossoms, the gold silk and the glass rims survive untouched. The
+approved milestone timings are unchanged. The necklace is fully opaque
+from its first frame (its emergence is scale + travel only).
 
 **Final QA pass** — favicon set generated from the GJS coin
 (`favicon.ico` 16/32/48 + `images/favicon-32.png` +

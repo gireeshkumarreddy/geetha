@@ -27,6 +27,9 @@ import cv2
 import numpy as np
 from PIL import Image
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from floor import dark_mask, disc_mask, rect_mask, synth_floor  # noqa: E402
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "images")
 DEFAULT_SRC = (r"C:/Users/giris/AppData/Local/Temp/claude/C--Users-giris-OneDrive-Desktop-Geeta"
@@ -60,7 +63,13 @@ TEXT_OVERLAYS = [                     # deviation-matte inpaint (strokes only)
     (998, 150, 1245, 410),            # right callout labels + dotted lines (through to the metal)
 ]
 CAPTION_BOX = (455, 480, 1125, 544)   # podium captions - smooth face, filled by blend
-THUMB_BAND = (222, 574, 1262, 838)    # thumbnail rail incl. arrows, labels, dots
+# the thumbnail rail is lifted out piece by piece and the floor beneath rebuilt
+RAIL_DISCS = [(358, 669, 79), (548, 669, 79), (740, 672, 106), (928, 669, 79), (1100, 669, 79)]  # glass discs + rim + shadow
+RAIL_ARROWS = [(252, 668, 29), (1213, 668, 29)]
+RAIL_TEXT = (222, 722, 1262, 838)     # labels, rules, numbers, dots
+FLOOR_BOX = (205, 574, 1275, 864)     # the marble floor band
+FLOOR_LINE = 578                      # podium base / floor contact
+FLOOR_EXCLUDE = [(195, 745, 300, 864), (1160, 735, 1300, 864)]   # bokeh blossoms: real, never floor samples
 
 
 def u8(a):
@@ -195,23 +204,14 @@ def main():
         print(f"  gjs-t{i}     {c.size[0]}x{c.size[1]}")
 
     print("environment:")
-    clean_f = img8.astype(np.float32)
-    clean_f = fill_vertical_blend(clean_f, THUMB_BAND, sigma=11)
-    # wash the band horizontally as well, so per-column sampling differences
-    # can never leave vertical seams in the frosted area
-    bx0, by0, bx1, by1 = THUMB_BAND
-    clean_f[by0:by1, bx0:bx1] = cv2.GaussianBlur(clean_f[by0:by1, bx0:bx1], (0, 0), sigmaX=27, sigmaY=7)
-    clean = np.clip(clean_f, 0, 255).astype(np.uint8)
     # text first (so the hole fill can never smear stroke colours), low-threshold
     # second pass for the light-grey callout strokes
-    clean = cv2.inpaint(clean, deviation_mask(rgb, TEXT_OVERLAYS), 8, cv2.INPAINT_TELEA)
+    clean = cv2.inpaint(img8, deviation_mask(rgb, TEXT_OVERLAYS), 8, cv2.INPAINT_TELEA)
     clean = cv2.inpaint(clean, deviation_mask(rgb, TEXT_OVERLAYS[3:5], thresh=0.028, dilate=9), 8, cv2.INPAINT_TELEA)
     clean = np.clip(fill_vertical_blend(clean.astype(np.float32), CAPTION_BOX, sigma=8), 0, 255).astype(np.uint8)
     clean = cv2.inpaint(clean, hole, 12, cv2.INPAINT_TELEA)
     # melt the big fills so no seams survive
     big = hole.copy()
-    tb = THUMB_BAND
-    big[tb[1] - 8:tb[3] + 8, tb[0] - 8:tb[2] + 8] = 255
     cb = CAPTION_BOX
     big[cb[1] - 6:cb[3] + 6, cb[0] - 6:cb[2] + 6] = 255
     for (ox0, oy0, ox1, oy1) in TEXT_OVERLAYS[3:5]:      # callout zones: diffuse the box edges
@@ -219,6 +219,11 @@ def main():
     soft = cv2.GaussianBlur(clean.astype(np.float32), (0, 0), 19)
     wgt = cv2.GaussianBlur((big > 0).astype(np.float32), (0, 0), 6)[..., None]
     clean = np.clip(clean.astype(np.float32) * (1 - wgt) + soft * wgt, 0, 255).astype(np.uint8)
+    # the thumbnail rail (glass discs, arrows, labels, dots) is live HTML: lift
+    # it out and rebuild the marble floor beneath from the real floor around it
+    rail = np.maximum(disc_mask((h, w), RAIL_DISCS + RAIL_ARROWS), dark_mask(rgb, [RAIL_TEXT]))
+    clean = u8(synth_floor(clean.astype(np.float32) / 255.0, rail, FLOOR_BOX, FLOOR_LINE,
+                           exclude=rect_mask((h, w), FLOOR_EXCLUDE)))
     bg = Image.fromarray(clean)
     bg.save(os.path.join(OUT, "gjs-bg.webp"), "WEBP", quality=86, method=6)
     bg.save(os.path.join(OUT, "gjs-bg.jpg"), "JPEG", quality=86, optimize=True, progressive=True)

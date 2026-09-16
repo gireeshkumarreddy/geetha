@@ -87,10 +87,11 @@
   transform: translate3d(-50%, calc((1 - var(--pn, 0)) * -9%), 0)
              scale(calc(0.5 + 0.5 * var(--pn, 0)));
   transform-origin: 50% 14%;
-  opacity: calc(0.05 + 0.95 * min(1, var(--pn, 0) * 1.45));
-  transition: transform 0.18s cubic-bezier(0.25, 0.6, 0.3, 1),
-              opacity 0.18s linear;
-  will-change: transform, opacity;
+  /* fully opaque and sharp from its first frame - the emergence is scale +
+     travel only (never a faint ghost that reads as blur) */
+  opacity: 1;
+  transition: transform 0.18s cubic-bezier(0.25, 0.6, 0.3, 1);
+  will-change: transform;
 }
 
 .gjn__neck-breathe { position: relative; }

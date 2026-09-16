@@ -29,10 +29,22 @@ sr.readModel(MODEL)
 sr.setModel("fsrcnn", 2)
 
 
-def sr2x(rgb_u8: np.ndarray) -> np.ndarray:
+def sr2x(rgb_u8: np.ndarray, tile=224, overlap=16) -> np.ndarray:
+    """2x super-resolution in overlapping horizontal tiles (keeps peak memory
+    small; the network is convolutional, so seams inside the overlap are exact)."""
     bgr = cv2.cvtColor(rgb_u8, cv2.COLOR_RGB2BGR)
-    up = sr.upsample(bgr)
-    return cv2.cvtColor(up, cv2.COLOR_BGR2RGB)
+    h, w = bgr.shape[:2]
+    out = np.zeros((h * 2, w * 2, 3), np.uint8)
+    y = 0
+    while y < h:
+        y0 = max(0, y - overlap)
+        y1 = min(h, y + tile + overlap)
+        up = sr.upsample(bgr[y0:y1])
+        top = (y - y0) * 2
+        take_h = (min(h, y + tile) - y) * 2
+        out[y * 2:y * 2 + take_h] = up[top:top + take_h]
+        y += tile
+    return cv2.cvtColor(out, cv2.COLOR_BGR2RGB)
 
 
 def sharpen(im: Image.Image) -> Image.Image:
@@ -59,6 +71,11 @@ def upscale_rgb(im: Image.Image) -> Image.Image:
 
 
 def main():
+    import json
+    # idempotency: a manifest records each stem's size after its upscale; a
+    # file whose current size still matches was not rebuilt and is skipped
+    ledger_path = os.path.join(IMG, "hd-upscaled.json")
+    ledger = json.load(open(ledger_path)) if os.path.exists(ledger_path) else {}
     files = sorted(os.listdir(IMG))
     stems: dict[str, str] = {}
     for f in files:
@@ -73,8 +90,8 @@ def main():
     for stem, src in stems.items():
         path = os.path.join(IMG, src)
         im = Image.open(path)
-        if im.width >= MIN_DONE_WIDTH:
-            print(f"  skip  {src} ({im.width}px, already HD)")
+        if ledger.get(stem) == [im.width, im.height] or im.width >= MIN_DONE_WIDTH * 1.5:
+            print(f"  skip  {src} ({im.width}x{im.height}, already HD)")
             continue
         has_alpha = im.mode in ("RGBA", "LA") or (im.mode == "P" and "transparency" in im.info)
         if has_alpha:
@@ -89,7 +106,9 @@ def main():
                 out.save(os.path.join(IMG, stem + ".jpg"), "JPEG", quality=92, optimize=True, progressive=True)
             out.save(os.path.join(IMG, stem + ".webp"), "WEBP", quality=92, method=6)
         done += 1
-        print(f"  {stem:22s} {im.width}x{im.height} -> {out.width}x{out.height}")
+        ledger[stem] = [out.width, out.height]
+        json.dump(ledger, open(ledger_path, "w"), indent=1, sort_keys=True)
+        print(f"  {stem:22s} {im.width}x{im.height} -> {out.width}x{out.height}", flush=True)
     print(f"done: {done} images upscaled")
 
 

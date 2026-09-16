@@ -85,7 +85,7 @@
 
 /* whole group fades in from depth on approach */
 .gjr__group {
-  opacity: calc(0.25 + 0.75 * min(1, var(--p, 0) * 7));
+  opacity: calc(0.6 + 0.4 * min(1, var(--p, 0) * 7));
   transition: opacity 0.9s ease;
 }
 
