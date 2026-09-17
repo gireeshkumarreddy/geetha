@@ -560,64 +560,74 @@
 
 /* --------------------------------------------------------------- compact */
 @media (max-width: 1023px) {
-  .gjr__track { height: auto; }
+  /* the section stays pinned here too (same track/stage/crossfade mechanism
+     as desktop, inherited unchanged below) so the gold→silver rail
+     sequence finishes playing before scrolling is allowed to move past this
+     section into the next one - only the overlay content is re-laid-out and
+     re-scaled for a narrow screen */
+  .gjr__callout { display: none; }     /* spatial annotations don't read at this scale */
+  /* the scene is far wider than the mobile crop (same cover-crop technique
+     used everywhere else in this codebase), so the exploded-ring captions -
+     positioned as fixed % of that wide scene - land partly off the visible
+     slice at this width; hidden here the same way the callouts are above */
+  .gjr__caption { display: none; }
 
-  .gjr__stage {
-    position: static;
-    height: auto;
-    overflow: visible;
-    padding-bottom: 40px;
+  /* the pinned stage now frames the ring imagery to a shorter centred band
+     (see .gjr__view below), leaving open space above it - the editorial
+     text sits there instead of overlaying the artwork */
+  .gjr__copy {
+    left: 20px;
+    right: 20px;
+    top: 3svh;
+    width: auto;
+    text-align: center;
   }
 
+  .gjr__eyebrow { justify-content: center; font-size: 10px; margin-bottom: 8px; }
+  .gjr__title { font-size: clamp(24px, 7vw, 34px); margin-bottom: 8px; }
+  .gjr__orn { justify-content: center; }
+  .gjr__desc { display: none; }
+  .gjr__cta { padding: 10px 18px; font-size: 10px; gap: 6px; }
+  .gjr__cue { left: 20px; top: auto; bottom: 30svh; }
+
+  /* the scene's cover-crop formula (see the base .gjr__scene rule) sizes
+     itself off the FULL pinned stage height on mobile, which - for this
+     section's off-centre two-ring composition (unlike the single-centred
+     hero other sections use this same technique for) - crops in far too
+     tight and leaves the rings looking oversized and off-centre. Framing
+     the scene to a shorter band instead (as the section used to be sized
+     before it was pinned) keeps far more of the composition in view.
+     Anchored from the top (right below the copy block) and sized to reach
+     down near the stage's own bottom edge, rather than centred with a
+     fixed height, so the pinned viewport is filled edge-to-edge instead of
+     leaving a stretch of empty background below the rail. */
   .gjr__view {
-    position: relative;
-    height: clamp(320px, 52svh, 520px);
+    top: 24svh;
+    bottom: auto;
+    height: clamp(340px, 58svh, 560px);
     overflow: hidden;
   }
 
   .gjr__scene {
-    width: max(100%, calc(clamp(320px, 52svh, 520px) * 1.7778));
+    width: max(100%, calc(clamp(340px, 58svh, 560px) * 1.7778));
     top: 50%;
   }
 
-  .gjr__callout { display: none; }     /* spatial annotations don't read at this scale */
-  .gjr__caption h3 { font-size: 11px; }
-  .gjr__caption p { font-size: 9px; }
-
-  .gjr__copy {
-    position: relative;
-    inset: auto;
-    width: auto;
-    padding: 46px clamp(20px, 6vw, 56px) 8px;
-  }
-
-  .gjr__eyebrow { font-size: 11px; margin-bottom: 10px; }
-  .gjr__title { font-size: clamp(32px, 8.4vw, 46px); margin-bottom: 10px; }
-  .gjr__desc { display: none; }
-  .gjr__cta { padding: 12px 22px; font-size: 11px; gap: 8px; }
-  .gjr__cue { display: none; }
-
-  .gjr__aside {
-    position: relative;
-    inset: auto;
-    width: auto;
-    padding: 30px clamp(20px, 6vw, 56px) 6px;
-  }
-
-  .gjr__aside h3 { font-size: 24px; }
-  .gjr__aside > p { font-size: 14px; }
-  .gjr__aside li { font-size: 13.5px; }
-  .gjr__aside li svg { flex-basis: 24px; height: 24px; }
-
+  /* the secondary feature list is desktop-only real estate - on a pinned
+     mobile stage there isn't room for it alongside the copy + rail without
+     crowding, so it stays hidden here (the rest of the pin/crossfade still
+     plays the same as desktop) */
+  .gjr__aside { display: none; }
   .gjr__forever { display: none; }
 
+  /* sits on the ring image's own bottom edge (not floating in empty space
+     below it), matching how the rail overlays the podium on desktop */
   .gjr__rail {
-    position: relative;
-    left: auto;
-    bottom: auto;
-    transform: none;
+    left: 16px;
+    right: 16px;
+    bottom: 2svh;
     width: auto;
-    padding: 26px clamp(16px, 5vw, 48px) 0;
+    transform: none;
   }
 
   /* overflow-x:auto forces overflow-y to clip too (no way to scroll one
@@ -633,28 +643,16 @@
   .gjr__rail-items {
     gap: 10px;
     overflow-x: auto;
-    padding: 24px 4px 56px;
+    padding: 10px 4px 20px;
     -webkit-mask-image: linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
     mask-image: linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
     scrollbar-width: none;
   }
   .gjr__rail-items::-webkit-scrollbar { display: none; }
-  .gjr__rail-items > li { flex: 0 0 96px; }
+  .gjr__rail-items > li { flex: 0 0 84px; }
   .gjr__thumb { --disc: 76px; }
   .gjr__thumb h4 { font-size: 9px; }
   .gjr__arrow { display: none; }
-
-  /* silver phase = its own flow block; nothing folds away on mobile */
-  .gjr__view--silver {
-    position: relative;
-    height: clamp(300px, 48svh, 480px);
-    opacity: 1;
-    pointer-events: auto;
-    margin-top: 34px;
-  }
-
-  .gjr__sheen { display: none; }
-  .js .gjs__ring[data-at] { transform: none; }
 }
 
 
@@ -662,24 +660,21 @@
    SILVER STATE (keyframe 04) - gold → silver material transformation
    ========================================================================== */
 
-/* gold phase leaving (desktop pinned timeline only - mobile shows both states
-   as sequential flow blocks, so nothing may hide there) */
-@media (min-width: 1024px) {
-  .js .gjr [data-until] { pointer-events: auto; }
+/* gold phase leaving (pinned timeline, both desktop and mobile) */
+.js .gjr [data-until] { pointer-events: auto; }
 
-  .js .gjr [data-until].is-out {
-    opacity: 0 !important;
-    pointer-events: none;
-    transition: opacity 0.7s ease, transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .js .gjr .gjr__copy [data-until].is-out,
-  .js .gjr .gjr__aside [data-until].is-out { transform: translateY(-12px); }
-
-  /* the exploded gold rings fold ~2/3 back toward compact while fading */
-  .gjr__group.is-out { --pn: 0.35; opacity: 0 !important; }
-  .gjr__group.is-out .gjr__piece { transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1); }
+.js .gjr [data-until].is-out {
+  opacity: 0 !important;
+  pointer-events: none;
+  transition: opacity 0.7s ease, transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+.js .gjr .gjr__copy [data-until].is-out,
+.js .gjr .gjr__aside [data-until].is-out { transform: translateY(-12px); }
+
+/* the exploded gold rings fold ~2/3 back toward compact while fading */
+.gjr__group.is-out { --pn: 0.35; opacity: 0 !important; }
+.gjr__group.is-out .gjr__piece { transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1); }
 
 /* silver scene layer: crossfades in over the gold view ---------------------- */
 .gjr__view--silver {

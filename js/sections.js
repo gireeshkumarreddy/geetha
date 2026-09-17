@@ -222,7 +222,7 @@
     }
 
     function start() {
-      if (timer || reduceMotion.matches || !visible) return;
+      if (timer || reduceMotion.matches || !visible || rail.hasAttribute('data-rail-manual')) return;
       timer = window.setInterval(() => { if (railOn()) goTo(active + step); }, interval);
     }
 

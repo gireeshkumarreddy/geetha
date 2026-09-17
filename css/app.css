@@ -612,8 +612,8 @@
   transition: transform 0.35s cubic-bezier(0.2, 1, 0.3, 1);
 }
 
-:is(.gjn__cta, .gjr__cta, .gje__cta, .gjbn__cta, .gjbr__cta, .gjo__a-cta, .gjm__cta, .gjrs__cta):hover .gj-cta-wa-icon,
-:is(.gjn__cta, .gjr__cta, .gje__cta, .gjbn__cta, .gjbr__cta, .gjo__a-cta, .gjm__cta, .gjrs__cta):focus-visible .gj-cta-wa-icon {
+:is(.gjn__cta, .gjr__cta, .gje__cta, .gjbn__cta, .gjbr__cta, .gjmc-cta, .gjo__a-cta, .gjm__cta, .gjrs__cta):hover .gj-cta-wa-icon,
+:is(.gjn__cta, .gjr__cta, .gje__cta, .gjbn__cta, .gjbr__cta, .gjmc-cta, .gjo__a-cta, .gjm__cta, .gjrs__cta):focus-visible .gj-cta-wa-icon {
   transform: scale(1.18) rotate(-6deg);
 }
 

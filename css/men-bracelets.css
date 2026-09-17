@@ -245,57 +245,14 @@
 
 /* --------------------------------------------------------------- compact */
 @media (max-width: 1023px) {
-  /* on desktop this section is double-contained (both .gjbr__stage and
-     .gjbr__scene clip), but on mobile .gjbr__stage is deliberately
-     overflow:visible (it's no longer the sticky-pinned stage here) so only
-     .gjbr__scene's own clip was left. The rocks' negative offset at full
-     --open still registers in the DOM's scrollable extent even though
-     .gjbr__scene visually clips it, which was pushing the whole page's
-     scrollWidth past the viewport and, on real devices, throwing off
-     position:fixed elements like the WhatsApp button. Clipping here closes
-     that off without touching .gjbr__stage's own overflow. */
-  .gjbr__track { height: auto; overflow-x: hidden; }
-
-  .gjbr__stage {
-    position: static;
-    height: auto;
-    overflow: visible;
-    padding-bottom: 36px;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .gjbr__scene {
-    position: relative;
-    left: auto;
-    top: auto;
-    transform: none;
-    width: 100%;
-    height: clamp(320px, 52svh, 500px);
-    overflow: hidden;
-    order: 0;
-  }
-
-  .gjbr__scene picture.gjbr__bg { position: absolute; inset: 0; }
-
-  /* title/subtitle moved above the image on mobile via flex order (source
-     order stays scene-then-copy so desktop, where copy is absolutely
-     positioned, is unaffected) */
-  .gjbr__copy {
-    position: relative;
-    inset: auto;
-    width: auto;
-    transform: none;
-    opacity: 1;
-    padding: 28px clamp(20px, 6vw, 56px) 0;
-    text-align: center;
-    order: -1;
-  }
-
-  .gjbr__orn { justify-content: center; }
-  .gjbr__orn i { margin: 0 auto; }
-
-  .gjbr__cta-wrap { position: relative; left: auto; bottom: auto; transform: none; opacity: 1; margin: 20px 0 0; text-align: center; order: 0; }
+  /* the section stays pinned here too (same track/stage mechanism as
+     desktop, inherited unchanged below) so the rock-opening + bracelet
+     coverflow sequence finishes playing before scrolling is allowed to move
+     past this section into the next one - .gjbr__copy/.gjbr__cta-wrap are
+     already centred overlays on desktop (not a side column like the rings
+     section), so they carry over directly; only the rock/piece sizing is
+     re-tuned for a narrow screen */
+  .gjbr__title { font-size: clamp(24px, 7.4vw, 38px); }
 
   /* the desktop --open offset (-16% - open*26%) is tuned for a 76%-wide
      rock; re-anchored here so a bigger, closer-set pair stays visible and
