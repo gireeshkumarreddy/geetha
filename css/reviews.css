@@ -1,0 +1,356 @@
+/* ==========================================================================
+   Geetha Jewellers — REVIEWS · "Stories That Stay"
+   --------------------------------------------------------------------------
+   Pinned vertical scroll converted to a cinematic horizontal journey through
+   the same data-progress/--p mechanism the rings/bangles/men's-bracelets
+   sections already use (js/sections.js writes --p every frame; this file's
+   only new piece is `data-scrollx`, which that same per-frame loop drives —
+   see the comment there). A fixed editorial title sits left; an overflowing
+   row of review cards - one large featured card, several smaller ones at
+   staggered heights, then a closing "Loved & Trusted" panel - travels
+   beneath a soft edge mask as the section is pinned. Below 1024px the track
+   reverts to plain native horizontal scrolling (no JS transform, no pin).
+   ========================================================================== */
+
+.gjrv {
+  --gjrv-gold: #a9853c;
+  --gjrv-brown: #6b4d1e;
+  --gjrv-ink: #4a3a22;
+  --gjrv-body: #7a6a52;
+  --gjrv-ivory: #f8f3e8;
+  --gjrv-travel: 260vh;
+  position: relative;
+  background: var(--gjrv-ivory);
+  font-family: "Jost", "Segoe UI", system-ui, sans-serif;
+}
+
+.gjrv__track {
+  position: relative;
+  height: calc(100vh + var(--gjrv-travel));
+  height: calc(100svh + var(--gjrv-travel));
+}
+
+.gjrv__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  background:
+    radial-gradient(ellipse 60% 50% at 15% 20%, rgba(184, 146, 60, 0.09), transparent 70%),
+    radial-gradient(ellipse 50% 60% at 90% 85%, rgba(184, 146, 60, 0.07), transparent 70%),
+    linear-gradient(180deg, #faf5ea 0%, #f8f3e8 50%, #f4ecdd 100%);
+}
+
+/* subtle marble vein texture, CSS-only */
+.gjrv__stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(115deg, transparent 42%, rgba(169, 133, 60, 0.05) 44%, transparent 47%),
+    linear-gradient(70deg, transparent 60%, rgba(169, 133, 60, 0.04) 62%, transparent 65%);
+}
+
+/* --------------------------------------------------------- decoration */
+.gjrv__deco { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+
+.gjrv__ring {
+  position: absolute;
+  fill: none;
+  stroke: var(--gjrv-gold);
+}
+
+.gjrv__ring--a { left: -6%; top: -10%; width: 30vw; stroke-width: 0.4; opacity: 0.1; }
+.gjrv__ring--b { right: 4%; bottom: -14%; width: 24vw; stroke-width: 0.5; opacity: 0.09; }
+.gjrv__ring--c { right: 22%; top: 8%; width: 10vw; stroke-width: 0.6; opacity: 0.12; }
+
+/* ---------------------------------------------------------------- head */
+.gjrv__head {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 auto;
+  width: clamp(220px, 21vw, 360px);
+  padding-left: clamp(24px, 5vw, 88px);
+  padding-right: clamp(16px, 2vw, 32px);
+  opacity: calc(1 - var(--xp, 0) * 0.55);
+  transform: translateX(calc(var(--xp, 0) * -18px));
+  transition: opacity 0.2s linear, transform 0.2s linear;
+}
+
+.gjrv__eyebrow {
+  margin: 0 0 14px;
+  font-size: clamp(9.5px, 0.8vw, 12.5px);
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: #8a6f3a;
+}
+
+.gjrv__title {
+  margin: 0 0 18px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 600;
+  font-size: clamp(38px, 4.4vw, 68px);
+  line-height: 1.04;
+  color: var(--gjrv-ink);
+}
+
+.gjrv__orn { display: flex; align-items: center; gap: 8px; margin: 0 0 22px; }
+.gjrv__orn i { display: block; width: 46px; height: 1px; background: linear-gradient(to right, var(--gjrv-gold), rgba(169, 133, 60, 0)); }
+.gjrv__orn span { display: block; width: 5px; height: 5px; border: 1px solid var(--gjrv-gold); transform: rotate(45deg); }
+
+.gjrv__hint {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #8a6f3a;
+  opacity: calc(1 - var(--xp, 0) * 3.2);
+}
+
+.gjrv__hint i {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid rgba(169, 133, 60, 0.6);
+  font-style: normal;
+  animation: gjrv-nudge 2.2s ease-in-out infinite;
+}
+
+@keyframes gjrv-nudge {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(4px); }
+}
+
+/* -------------------------------------------------------------- canvas */
+.gjrv__canvas {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 auto;
+  height: 72%;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 5%, #000 94%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 5%, #000 94%, transparent 100%);
+}
+
+.gjrv__cards {
+  display: flex;
+  align-items: center;
+  gap: clamp(20px, 2.2vw, 36px);
+  height: 100%;
+  margin: 0;
+  padding: 0 4vw 0 0;
+  list-style: none;
+  will-change: transform;
+}
+
+/* ---------------------------------------------------------------- card */
+.gjrv__card {
+  position: relative;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  height: 78%;
+  padding: clamp(24px, 2.2vw, 38px) clamp(22px, 2vw, 32px) clamp(20px, 1.8vw, 28px);
+  border-radius: 16px;
+  background: linear-gradient(165deg, rgba(255, 253, 248, 0.92), rgba(250, 244, 231, 0.86));
+  border: 1px solid rgba(169, 133, 60, 0.22);
+  box-shadow: 0 18px 40px rgba(90, 65, 20, 0.08), 0 2px 8px rgba(90, 65, 20, 0.05);
+  backdrop-filter: blur(6px);
+  transform: translateY(var(--mt, 0));
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s ease, border-color 0.45s ease;
+}
+
+.gjrv__card:hover {
+  transform: translateY(calc(var(--mt, 0) - 8px));
+  box-shadow: 0 26px 54px rgba(90, 65, 20, 0.14), 0 4px 14px rgba(90, 65, 20, 0.07);
+  border-color: rgba(212, 175, 55, 0.5);
+}
+
+.gjrv__card--sm { width: clamp(210px, 17vw, 260px); justify-content: center; }
+.gjrv__card--md { width: clamp(250px, 20vw, 310px); justify-content: center; }
+
+.gjrv__card--featured {
+  width: clamp(320px, 27vw, 430px);
+  height: 100%;
+  padding: clamp(32px, 3vw, 48px) clamp(30px, 2.6vw, 42px) clamp(26px, 2.2vw, 34px);
+  justify-content: center;
+  background: linear-gradient(165deg, rgba(255, 253, 248, 0.97), rgba(250, 242, 226, 0.92));
+  border-color: rgba(212, 175, 55, 0.4);
+  box-shadow: 0 30px 60px rgba(90, 65, 20, 0.14), 0 4px 14px rgba(90, 65, 20, 0.08);
+}
+
+.gjrv__card--featured:hover { transform: translateY(-8px); }
+
+.gjrv__glow {
+  position: absolute;
+  left: 50%;
+  top: 38%;
+  width: 60%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 224, 150, 0.35), rgba(255, 224, 150, 0) 68%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.gjrv__qmark {
+  display: block;
+  margin: 0 0 4px;
+  font-family: Georgia, serif;
+  font-size: clamp(30px, 2.6vw, 42px);
+  line-height: 1;
+  color: var(--gjrv-gold);
+}
+
+.gjrv__stars {
+  margin: 0 0 12px;
+  color: var(--gjrv-gold);
+  font-size: clamp(12px, 1vw, 15px);
+  letter-spacing: 0.35em;
+}
+
+.gjrv__text {
+  margin: 0 0 18px;
+  font-style: italic;
+  font-size: clamp(13px, 1vw, 16px);
+  line-height: 1.62;
+  color: var(--gjrv-body);
+}
+
+.gjrv__card--featured .gjrv__text { font-size: clamp(15px, 1.2vw, 19px); }
+
+.gjrv__who {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: auto 0 0;
+}
+
+.gjrv__who i {
+  flex: 0 0 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 38% 30%, #f3e7cd, #e4cf9e);
+  border: 1px solid rgba(169, 133, 60, 0.35);
+}
+
+.gjrv__who i svg { width: 52%; height: 52%; stroke: var(--gjrv-brown); fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+
+.gjrv__who b { display: block; font-size: 13.5px; font-weight: 600; color: var(--gjrv-ink); }
+.gjrv__who small { display: block; margin-top: 2px; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; color: #9a835d; }
+
+/* --------------------------------------------------------- closing card */
+.gjrv__card--close {
+  width: clamp(260px, 22vw, 340px);
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: linear-gradient(165deg, #6b4d1e, #4a3a22 80%);
+  border-color: rgba(212, 175, 55, 0.45);
+  box-shadow: 0 30px 60px rgba(60, 42, 12, 0.28);
+}
+
+.gjrv__close-orn { margin: 0 0 10px; font-size: 20px; color: #d9b563; }
+
+.gjrv__close-h {
+  margin: 0 0 14px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 600;
+  font-size: clamp(26px, 2.4vw, 36px);
+  line-height: 1.1;
+  color: #fdf8ec;
+}
+
+.gjrv__close-stat { display: flex; align-items: baseline; justify-content: center; gap: 10px; margin: 0 0 10px; }
+.gjrv__close-stat b { font-family: "Cormorant Garamond", Georgia, serif; font-size: clamp(28px, 2.6vw, 38px); color: #e8c87c; }
+.gjrv__close-stat span { color: #d9b563; font-size: 11px; letter-spacing: 0.3em; }
+
+.gjrv__close-p { margin: 0; font-size: 12px; letter-spacing: 0.08em; color: #d9cbb0; }
+
+/* ------------------------------------------------------------- reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .gjrv__hint i { animation: none; }
+  .gjrv__card, .gjrv__head { transition: none; }
+}
+
+/* ---------------------------------------------------------------- compact */
+@media (max-width: 1023px) {
+  .gjrv__track { height: auto; }
+
+  .gjrv__stage {
+    position: static;
+    height: auto;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 56px 0 48px;
+  }
+
+  .gjrv__head {
+    width: auto;
+    opacity: 1;
+    transform: none;
+    padding: 0 clamp(20px, 6vw, 56px);
+    margin-bottom: 32px;
+    text-align: center;
+  }
+
+  .gjrv__orn { justify-content: center; }
+  .gjrv__hint { display: none; }
+
+  .gjrv__canvas {
+    height: auto;
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-snap-type: x proximity;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 3%, #000 97%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 3%, #000 97%, transparent 100%);
+    scrollbar-width: none;
+  }
+
+  .gjrv__canvas::-webkit-scrollbar { display: none; }
+
+  /* same overflow-x/overflow-y coupling as the ring cards: with too little
+     vertical padding the card shadows (up to ~90px on the featured card)
+     were getting clipped flat by the canvas's forced overflow-y instead
+     of fading out softly. The canvas is auto-height, so the extra padding
+     just gives the shadow room without shifting the cards. */
+  .gjrv__cards {
+    height: auto;
+    padding: 32px clamp(20px, 6vw, 56px) 96px;
+    gap: 16px;
+  }
+
+  .gjrv__card {
+    height: auto;
+    min-height: 260px;
+    scroll-snap-align: start;
+    transform: none;
+  }
+
+  .gjrv__card:hover { transform: translateY(-6px); }
+
+  .gjrv__card--sm, .gjrv__card--md { width: 78vw; max-width: 340px; }
+  .gjrv__card--featured { width: 84vw; max-width: 380px; }
+  .gjrv__card--close { width: 70vw; max-width: 300px; }
+}
+
+@media (max-width: 480px) {
+  .gjrv__card--sm, .gjrv__card--md, .gjrv__card--featured { width: 86vw; }
+}

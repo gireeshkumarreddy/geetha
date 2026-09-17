@@ -422,6 +422,121 @@
 .gjf__made { display: inline-flex; align-items: center; gap: 7px; }
 .gjf__made svg { width: 15px; height: 15px; stroke: #b0862f; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 
+.gj-whatsapp {
+  position: fixed;
+  right: clamp(18px, 2.5vw, 36px);
+  bottom: clamp(18px, 2.5vw, 36px);
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  width: clamp(52px, 4vw, 64px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  box-shadow: 0 8px 24px rgba(126, 87, 25, 0.28);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.gj-whatsapp::before {
+  content: "";
+  position: absolute;
+  inset: -11px;
+  z-index: 0;
+  border: 3px solid rgba(207, 164, 67, 0.92);
+  border-radius: 50%;
+  box-shadow: 0 0 18px rgba(207, 164, 67, 0.72);
+  animation: gj-whatsapp-attention 2.4s ease-out infinite;
+  pointer-events: none;
+}
+
+.gj-whatsapp img {
+  display: block;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+}
+
+.gj-whatsapp:hover,
+.gj-whatsapp:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(126, 87, 25, 0.4);
+}
+
+.gj-whatsapp:hover::before,
+.gj-whatsapp:focus-visible::before { animation-play-state: paused; opacity: 1; }
+
+.gj-whatsapp:focus-visible {
+  outline: 3px solid rgba(207, 164, 67, 0.8);
+  outline-offset: 4px;
+  animation: gj-whatsapp-focus 0.8s ease-out;
+}
+
+.gj-whatsapp:active { transform: translateY(-1px) scale(0.94); }
+
+.gj-scroll-hint {
+  position: fixed;
+  left: clamp(18px, 3vw, 42px);
+  bottom: clamp(18px, 3vw, 36px);
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #8a6f3a;
+  pointer-events: none;
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+.gj-scroll-hint span {
+  font-size: clamp(9px, 0.76vw, 12px);
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  line-height: 1.8;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.gj-scroll-hint i {
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(169, 133, 60, 0.75);
+  border-radius: 50%;
+  position: relative;
+}
+
+.gj-scroll-hint i::after {
+  content: "\2193";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: -8px 0 0 -4px;
+  color: #6a4b0e;
+  font-size: 14px;
+  font-style: normal;
+  line-height: 16px;
+  animation: gj-scroll-hint-pulse 2.2s ease-in-out infinite;
+}
+
+.gj-scroll-hint.is-ending {
+  opacity: 0;
+  transform: translateY(2px);
+}
+
+@keyframes gj-scroll-hint-pulse {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  55% { transform: translateY(2px); opacity: 1; }
+}
+
+@keyframes gj-whatsapp-focus {
+  0% { box-shadow: 0 0 0 0 rgba(207, 164, 67, 0.8), 0 8px 24px rgba(126, 87, 25, 0.28); }
+  100% { box-shadow: 0 0 0 12px rgba(207, 164, 67, 0), 0 8px 24px rgba(126, 87, 25, 0.28); }
+}
+
+@keyframes gj-whatsapp-attention {
+  0%, 100% { opacity: 0.12; transform: scale(0.82); }
+  35% { opacity: 1; transform: scale(1); }
+  70% { opacity: 0.08; transform: scale(1.2); }
+}
+
 /* ------------------------------------------------------------ reveal system */
 .js :is(.gja, .gjf) [data-rv] {
   opacity: 1;
@@ -479,6 +594,27 @@
   .gjf__contact { grid-column: 1 / -1; border-left: 0; padding-left: 0; }
   .gjf__name { white-space: normal; }
   .gjf__row { flex-direction: column; align-items: center; text-align: center; }
+
+  .gj-whatsapp {
+    right: 18px;
+    bottom: 18px;
+    width: 52px;
+  }
+}
+
+/* ------------------------------------------------------- CTA WhatsApp Icon */
+.gj-cta-wa-icon {
+  display: inline-block;
+  width: 1.45em;
+  height: 1.45em;
+  vertical-align: middle;
+  flex-shrink: 0;
+  transition: transform 0.35s cubic-bezier(0.2, 1, 0.3, 1);
+}
+
+:is(.gjn__cta, .gjr__cta, .gje__cta, .gjbn__cta, .gjbr__cta, .gjo__a-cta, .gjm__cta, .gjrs__cta):hover .gj-cta-wa-icon,
+:is(.gjn__cta, .gjr__cta, .gje__cta, .gjbn__cta, .gjbr__cta, .gjo__a-cta, .gjm__cta, .gjrs__cta):focus-visible .gj-cta-wa-icon {
+  transform: scale(1.18) rotate(-6deg);
 }
 
 /* ------------------------------------------------------- reduced motion */
@@ -486,4 +622,8 @@
   .js :is(.gja, .gjf) [data-rv],
   .js .gja .gja__scene > picture { transition: opacity 0.6s ease !important; transform: none !important; }
   .gja__store-btn:hover { transform: none; }
+  .gj-whatsapp:focus-visible { animation: none; }
+  .gj-whatsapp::before { animation: none; opacity: 0.9; transform: none; }
+  .gj-scroll-hint { transition: opacity 0.2s ease; }
+  .gj-scroll-hint i::after { animation: none; }
 }

@@ -1,50 +1,5 @@
 # Geetha Jewellers — collection stage
 
-## Men's collections
-
-The full page now includes two men's collection sections between the existing
-bangles and offer sections. **For Him** in the header, the full-screen menu,
-and the footer link directly to the new chapter.
-
-- `#mens-collections`: curb chains, rope chains, and pendants, in gold and silver.
-- `#mens-wristwear`: signet rings, link bracelets, and open kadas, in gold and silver.
-- `css/mens.css` provides the ivory showroom composition, separate product
-  layers, compact collection cards, and responsive layouts.
-- `js/mens.js` handles metal/category filtering, synchronized product details,
-  previous/next and keyboard selection, and a prefilled WhatsApp enquiry for
-  the selected design. It does not send messages automatically.
-- Existing `js/sections.js` drives the reversible scroll emergence and light
-  sweep. The wristwear companions fan out as the selected piece approaches.
-  Browsing gently cycles only while visible, with pauses for hover, focus,
-  touch, manual selection, hidden tabs, and reduced-motion preferences.
-- Mobile uses a normal document flow. Reduced motion removes pinning, product
-  transforms, and autoplay while retaining every collection control.
-
-The six designs are **illustrative concepts**, each available as gold and
-silver artwork. No stock, purity, price, weight, or product certification is
-asserted. Replace the concepts and descriptions with the client's approved
-catalogue before presenting them as actual merchandise. The enquiry link uses
-the same store WhatsApp number already present elsewhere in the page.
-
-`images/mens-gold.webp` and `images/mens-silver.webp` are transparent 3-column,
-2-row atlases. The cells are curb chain, rope chain, pendant, signet ring,
-bracelet, and kada, read left-to-right and then top-to-bottom. The clean
-`images/mens-showroom.webp` plate stays independent of the jewellery and all
-text is live HTML. The three assets total approximately **647 KiB**.
-The built-in image-generation prompts are preserved in
-`tools/mens-artwork-prompts.json`.
-
-The original Cinzel, Cormorant Garamond, Jost, and Great Vibes typefaces are
-now served locally through `css/fonts.css`; their redistribution licences
-are included in `fonts/`. No framework, build step, or production JavaScript
-dependency was added. Use the same static server command below to view the
-whole website. A local HTTP server is recommended for font preloads and CSS
-image masks; direct `file://` viewing can restrict those resources.
-
-The pre-existing app-store, legal, and social placeholder destinations remain
-part of the original site; this update adds collection browsing and enquiries,
-not checkout or an inventory backend.
-
 **Phase 01 · Cinematic Intro** (overlay `#gjintro`, css/intro.css,
 js/intro.js, tools/build_intro_assets.py) — APPROVED. The
 ~2.8s brand film from the Phase-01 master document: near-black → a gold
@@ -63,6 +18,39 @@ zero layout shift; scroll locked for the film's duration; click skips;
 `prefers-reduced-motion` gets a short elegant fade. Per the same document
 the header's frosted veil was softened (0.86→0.72 white, blur 9→6) so the
 band never washes out. Everything is transform/opacity/filter.
+
+**Animation-direction + image-quality pass** (2026-09-16 brief) —
+1) *HD images*: every plate and cutout is now 2× super-resolved
+(`tools/hd_upscale.py`, FSRCNN learned upscaling + light unsharp mask,
+WebP q92–95 / PNG lossless / JPEG q92); run it after any
+`tools/build_*_assets.py` rebuild. 2) *No blur anywhere*: removed the hero
+displays' depth-of-field blur (stage.js), the necklace's blur-to-sharp
+emergence, the bangles' dissolve/emerge blur, the reflection/glint blurs
+and the header's backdrop blur — depth now reads from scale, opacity and
+light only. 3) *Hero → About curtain*: the hero track carries one extra
+viewport (`.gj-track` 200svh + travel; stage.js subtracts it from its
+choreography travel) during which the stage stays pinned and `#our-story`
+(`margin-top: -100svh`, z-index 5, top shadow) rises over it; sections.js
+writes an eased `--cover` to the hero so the stage recedes (translate/scale
++ warm veil) as it is covered. 4) *About sequence*: the section's reveals
+now wait for `.is-settled` (section top ≤ 42% of the viewport, released
+on reverse), then image + text fade up, then the Tradition box arrives
+from the LEFT and Purity from the RIGHT (Family Values and the CTA after).
+5) *Signature Collection*: milestones re-spaced into a clearer progression
+(editorial → necklace emergence → specifications → cards → cue). About's
+images load eagerly so nothing arrives late. 6) *Crisp floors*: the
+references hide the floor under their detail cards / thumbnail rails;
+lifting those out had left diffusion-inpainted bands (necklace, gold +
+silver rings plates) that read as a smeared, blurred screen whenever the
+cards were not covering them. `tools/floor.py` (shared by the three
+builders) now rebuilds those bands as polished marble: a mask-weighted,
+strongly horizontal average of the REAL floor pixels around the holes
+(never the card/label pixels) plus a faint, fading mirror of the podium
+above the floor line — no blend, no blur, nothing real is touched. Labels,
+rules and dots are lifted with a darker-than-floor stroke gate, so the
+bokeh blossoms, the gold silk and the glass rims survive untouched. The
+approved milestone timings are unchanged. The necklace is fully opaque
+from its first frame (its emergence is scale + travel only).
 
 **Final QA pass** — favicon set generated from the GJS coin
 (`favicon.ico` 16/32/48 + `images/favicon-32.png` +

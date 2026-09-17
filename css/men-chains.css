@@ -1,0 +1,426 @@
+/* ==========================================================================
+   Geetha Jewellers — men's chains stage
+   --------------------------------------------------------------------------
+   Same mechanism as css/stage.css + js/stage.js (the homepage hero): a tall
+   track pins a 100vh stage, and men-chains.js maps the scroll progress
+   through the track to five chain displays crossing the stage one after
+   another. Only transform / opacity / filter are animated. Reuses the
+   --gj-gold / --gj-ivory / --gj-serif tokens declared by stage.css.
+   ========================================================================== */
+
+:root {
+  --gjmc-travel: 400vh;           /* scroll length of the choreography (stage is 100vh on top of it) */
+  --gjmc-hero-h: 56svh;           /* height of the centred chain display */
+  /* the display's bottom edge sits at the podium's contact line, i.e. 100% minus the
+     env image's object-position Y below — that pairing keeps the display glued to the
+     podium at every viewport aspect ratio, so it is never overridden per breakpoint */
+  --gjmc-baseline: 30%;
+}
+
+@supports not (height: 100svh) {
+  :root { --gjmc-hero-h: 56vh; }
+}
+
+/* --------------------------------------------------------------------------
+   Track + pinned stage
+   -------------------------------------------------------------------------- */
+.gjmc-section {
+  position: relative;
+  background: #1b1309;
+  color: var(--gj-ivory);
+  font-family: var(--gj-serif);
+}
+
+.gjmc-track {
+  position: relative;
+  height: calc(200vh + var(--gjmc-travel));
+  height: calc(200svh + var(--gjmc-travel));
+}
+
+.gjmc-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+  background: #1b1309;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Environment ------------------------------------------------------------- */
+.gjmc-env {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  transform: scale(1.05);
+  transform-origin: 50% 70%;
+  will-change: transform;
+}
+
+.gjmc-env img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 70%;   /* anchors the podium's front contact line to the display baseline below */
+}
+
+/* lighting layers (all transform / opacity) -------------------------------- */
+.gjmc-light {
+  position: absolute;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.gjmc-light--bloom {
+  inset: -6% -8%;
+  z-index: 1;
+}
+
+.gjmc-light--bloom::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 30% 34% at 50% 44%, rgba(255, 244, 214, 0.5), rgba(255, 244, 214, 0) 70%),
+    radial-gradient(ellipse 42% 12% at 50% 78%, rgba(255, 236, 196, 0.46), rgba(255, 236, 196, 0) 70%);
+  animation: gjmc-breathe 9s ease-in-out infinite;
+}
+
+/* a wide, very soft band of light that drifts across the scene with the scroll */
+.gjmc-light--sheen {
+  inset: -10% -30%;
+  z-index: 2;
+  background: linear-gradient(100deg,
+    rgba(255, 250, 236, 0) 30%, rgba(255, 250, 236, 0.28) 46%, rgba(255, 255, 250, 0.38) 50%,
+    rgba(255, 250, 236, 0.28) 54%, rgba(255, 250, 236, 0) 70%);
+  mix-blend-mode: soft-light;
+}
+
+/* warm pool on the marble under the centred chain */
+.gjmc-light--floor {
+  left: 50%;
+  bottom: 10%;
+  width: 44vw;
+  height: 12vh;
+  z-index: 4;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, rgba(255, 224, 160, 0.4), rgba(255, 224, 160, 0) 68%);
+}
+
+@keyframes gjmc-breathe {
+  0%, 100% { opacity: 0.86; }
+  50%      { opacity: 1; }
+}
+
+.gjmc-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 84% 78% at 50% 48%, rgba(18, 12, 4, 0) 55%, rgba(10, 6, 2, 0.55) 100%),
+    linear-gradient(to top, var(--gj-ivory) 0%, rgba(244, 238, 228, 0) 8%),
+    linear-gradient(to bottom, var(--gj-ivory) 0%, rgba(244, 238, 228, 0) 7%);
+}
+
+/* --------------------------------------------------------------------------
+   Heading — replaces the hero's header/nav row, which lives only in the
+   collection stage at the top of the page
+   -------------------------------------------------------------------------- */
+.gjmc-heading {
+  position: absolute;
+  bottom: 15svh;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  text-align: center;
+  pointer-events: none;
+}
+
+.gjmc-eyebrow {
+  margin: 0 0 8px;
+  font-size: clamp(10px, 0.85vw, 13px);
+  font-weight: 500;
+  letter-spacing: 0.4em;
+  text-indent: 0.4em;
+  text-transform: uppercase;
+  color: var(--gj-gold-light);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
+}
+
+.gjmc-title {
+  margin: 0;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 600;
+  font-size: clamp(20px, 2.2vw, 32px);
+  letter-spacing: 0.04em;
+  color: #f4ead0;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+}
+
+/* --------------------------------------------------------------------------
+   Display units: chain + reflection + shadow + light sweep
+   -------------------------------------------------------------------------- */
+.gjmc-displays {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.gjmc-display {
+  position: absolute;
+  left: 50%;
+  bottom: var(--gjmc-baseline);
+  height: calc(var(--gjmc-hero-h) * var(--size, 1));
+  transform: translateX(-50%);
+}
+
+.gjmc-display.is-hidden { visibility: hidden; }
+
+.gjmc-display__unit {
+  position: relative;
+  height: 100%;
+  transform-origin: 50% 100%;
+  will-change: transform, opacity, filter;
+}
+
+.gjmc-display__image {
+  display: block;
+  height: 100%;
+  width: auto;
+  -webkit-user-drag: none;
+}
+
+/* mirror effect: the chain's reflection in the polished marble floor, strong near
+   the display and fading with distance */
+.gjmc-display__reflection {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  width: 100%;
+  height: 100%;
+  transform: translateY(70%) scaleY(-0.7);
+  transform-origin: 50% 0;
+  opacity: 0.55;
+  filter: saturate(1.2) contrast(1.06);
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.74) 26%, rgba(0, 0, 0, 0.5) 58%, rgba(0, 0, 0, 0.2) 82%, rgba(0, 0, 0, 0) 96%);
+  mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.74) 26%, rgba(0, 0, 0, 0.5) 58%, rgba(0, 0, 0, 0.2) 82%, rgba(0, 0, 0, 0) 96%);
+}
+
+/* contact shadow / ambient occlusion under the display */
+.gjmc-display__shadow {
+  position: absolute;
+  left: 16%;
+  right: 16%;
+  bottom: -1.6%;
+  height: 6%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(10, 7, 3, 0.5), rgba(10, 7, 3, 0) 70%);
+  z-index: -1;
+}
+
+/* flash effect: golden light sweep clipped to the chain, masked by the display's own
+   alpha so only the chain and case catch the light */
+.gjmc-display__sweep {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  clip-path: inset(calc((var(--jy) - 0.06) * 100%) calc((1 - var(--jx) - var(--jw) - 0.06) * 100%) calc((1 - var(--jy) - var(--jh) - 0.06) * 100%) calc((var(--jx) - 0.06) * 100%));
+  -webkit-mask-image: var(--mask), radial-gradient(ellipse calc(var(--jw) * 70%) calc(var(--jh) * 60%) at calc((var(--jx) + var(--jw) / 2) * 100%) calc((var(--jy) + var(--jh) / 2) * 100%), #000 58%, rgba(0, 0, 0, 0) 100%);
+  mask-image: var(--mask), radial-gradient(ellipse calc(var(--jw) * 70%) calc(var(--jh) * 60%) at calc((var(--jx) + var(--jw) / 2) * 100%) calc((var(--jy) + var(--jh) / 2) * 100%), #000 58%, rgba(0, 0, 0, 0) 100%);
+  -webkit-mask-size: 100% 100%, 100% 100%;
+  mask-size: 100% 100%, 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+
+.gjmc-display__sweep i {
+  position: absolute;
+  top: -30%;
+  bottom: -30%;
+  left: -60%;
+  width: 220%;
+  transform: translate3d(24%, 0, 0);
+  background: linear-gradient(104deg,
+    rgba(255, 228, 170, 0) 36%,
+    rgba(255, 228, 170, 0.16) 44%,
+    rgba(255, 240, 200, 0.5) 48.4%,
+    rgba(255, 252, 240, 0.85) 49.6%,
+    rgba(255, 255, 255, 0.92) 50%,
+    rgba(255, 252, 240, 0.85) 50.4%,
+    rgba(255, 240, 200, 0.5) 51.6%,
+    rgba(255, 228, 170, 0.16) 56%,
+    rgba(255, 228, 170, 0) 64%);
+  will-change: transform;
+}
+
+.gjmc-display__sweep.is-on { animation: gjmc-sweep-fade 1.5s ease-out forwards; }
+.gjmc-display__sweep.is-on i { animation: gjmc-sweep-move 1.5s cubic-bezier(0.35, 0, 0.25, 1) forwards; }
+
+/* glints: the same pass, masked by the display's own luminance so only the bright gold
+   (and highlights) take it, for a sparkle on top of the broad sweep */
+.gjmc-display__sweep--glints {
+  -webkit-mask-mode: luminance, alpha;
+  mask-mode: luminance, alpha;
+  mix-blend-mode: plus-lighter;
+}
+
+.gjmc-display__sweep--glints i {
+  background: linear-gradient(104deg,
+    rgba(255, 248, 226, 0) 45%,
+    rgba(255, 248, 226, 0.5) 48.8%,
+    rgba(255, 255, 255, 1) 50%,
+    rgba(255, 248, 226, 0.5) 51.2%,
+    rgba(255, 248, 226, 0) 55%);
+}
+
+.gjmc-display__sweep--glints.is-on,
+.gjmc-display__sweep--glints.is-on i { animation-delay: 0.05s; }
+
+/* the display itself glows a touch while the light passes */
+.gjmc-display__image { transition: filter 0.5s ease; }
+.gjmc-display__image.is-lit { filter: brightness(1.06) saturate(1.08) contrast(1.03); }
+
+@keyframes gjmc-sweep-move {
+  from { transform: translate3d(24%, 0, 0); }
+  to   { transform: translate3d(-24%, 0, 0); }
+}
+
+@keyframes gjmc-sweep-fade {
+  0%   { opacity: 0; }
+  14%  { opacity: 1; }
+  82%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* --------------------------------------------------------------------------
+   Bottom: counter + progress (passive)
+   -------------------------------------------------------------------------- */
+.gjmc-footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  text-align: center;
+  pointer-events: none;
+}
+
+.gjmc-footer::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -30px;
+  width: 560px;
+  max-width: 100vw;
+  height: 150px;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at 50% 60%, rgba(20, 14, 6, 0.6) 0%, rgba(20, 14, 6, 0.32) 45%, rgba(20, 14, 6, 0) 72%);
+  z-index: -1;
+}
+
+.gjmc-footer > * { position: relative; }
+
+.gjmc-counter {
+  margin: 0 0 10px;
+  font-size: clamp(10px, 0.75vw, 12px);
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  color: var(--gj-gold-soft);
+}
+
+.gjmc-counter b { font-weight: 400; color: var(--gj-gold-light); }
+.gjmc-counter { text-shadow: 0 0 10px rgba(0, 0, 0, 0.6); }
+
+.gjmc-progress {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.gjmc-progress i {
+  position: relative;
+  display: block;
+  width: 28px;
+  height: 8px;
+}
+
+.gjmc-progress i::before,
+.gjmc-progress i::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  will-change: transform, opacity;
+}
+
+.gjmc-progress i::before {
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border: 1px solid var(--gj-gold-soft);
+  border-radius: 50%;
+  box-sizing: border-box;
+  opacity: calc(1 - var(--on, 0));
+}
+
+.gjmc-progress i::after {
+  width: 28px;
+  height: 5px;
+  margin: -2.5px 0 0 -14px;
+  border-radius: 3px;
+  background: var(--gj-gold-light);
+  box-shadow: 0 0 8px rgba(217, 187, 112, 0.5);
+  opacity: var(--on, 0);
+  transform: scaleX(var(--on, 0));
+}
+
+/* --------------------------------------------------------------------------
+   Compact / mobile composition
+   -------------------------------------------------------------------------- */
+@media (max-width: 767px), (max-width: 1023px) and (orientation: portrait) {
+  :root {
+    --gjmc-travel: 360vh;
+    --gjmc-hero-h: 46svh;
+  }
+
+  @supports not (height: 100svh) {
+    :root { --gjmc-hero-h: 46vh; }
+  }
+
+  .gjmc-heading { bottom: 13svh; }
+  .gjmc-light--floor { width: 120vw; height: 10vh; bottom: 12%; }
+
+  .gjmc-progress { gap: 9px; margin-bottom: 18px; }
+  .gjmc-progress i { width: 22px; }
+  .gjmc-progress i::after { width: 22px; margin-left: -11px; }
+  .gjmc-counter { margin-bottom: 8px; }
+  .gjmc-display__reflection { filter: saturate(1.15) contrast(1.04); opacity: 0.48; }
+}
+
+@media (max-height: 560px) and (orientation: landscape) {
+  :root { --gjmc-hero-h: 58svh; }
+  .gjmc-heading { bottom: 11svh; }
+  .gjmc-progress { margin-bottom: 12px; }
+}
+
+/* --------------------------------------------------------------------------
+   Reduced motion: cross-fade in place, no sweep / drift / breathing
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .gjmc-env, .gjmc-light--sheen { transform: none !important; }
+  .gjmc-light--bloom::before { animation: none; }
+  .gjmc-display__sweep { display: none; }
+  .gjmc-display__image { transition: none; }
+}

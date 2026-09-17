@@ -26,6 +26,9 @@ import cv2
 import numpy as np
 from PIL import Image
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from floor import dark_mask, disc_mask, poly_mask, rect_mask, synth_floor  # noqa: E402
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "images")
 DEFAULT_SRC = (r"C:/Users/giris/AppData/Local/Temp/claude/C--Users-giris-OneDrive-Desktop-Geeta"
@@ -55,7 +58,14 @@ TEXT_OVERLAYS = [                     # deviation-matte inpaint (strokes only)
     (1385, 710, 1505, 800),           # crafted-for-your-forever on the silk
 ]
 CAPTION_BOX = (512, 490, 1080, 550)   # podium captions - smooth face, filled by blend
-THUMB_BAND = (162, 586, 1198, 848)    # thumbnail rail incl. arrows, labels, dots
+# the thumbnail rail is lifted out piece by piece and the floor beneath rebuilt
+RAIL_DISCS = [(300, 678, 78), (490, 678, 78), (682, 677, 105), (870, 678, 78), (1060, 678, 78)]  # glass discs + rim + shadow
+RAIL_ARROWS = [(195, 675, 29), (1170, 675, 29)]
+RAIL_TEXT = (162, 738, 1198, 848)     # labels, rules, numbers, dots
+FLOOR_BOX = (150, 586, 1215, 864)     # the marble floor band
+FLOOR_LINE = 600                      # podium base / floor contact
+FLOOR_EXCLUDE = [(1198, 560, 1250, 864), (140, 790, 200, 864)]   # right silk fold + blossoms: real, never floor samples
+SILK = [(985, 864), (1090, 782), (1150, 748), (1250, 690), (1250, 864)]  # the gold silk crossing the floor's corner
 
 
 def u8(a):
@@ -211,25 +221,25 @@ def main():
 
     # ---- environment
     print("environment:")
-    clean_f = img8.astype(np.float32)
-    clean_f = fill_vertical_blend(clean_f, THUMB_BAND, sigma=11)
-    clean = np.clip(clean_f, 0, 255).astype(np.uint8)
     # text first (so the big hole fill can never smear stroke colours around),
     # with a lower-threshold second pass for the light-grey callout strokes
-    clean = cv2.inpaint(clean, deviation_mask(rgb, TEXT_OVERLAYS), 8, cv2.INPAINT_TELEA)
+    clean = cv2.inpaint(img8, deviation_mask(rgb, TEXT_OVERLAYS), 8, cv2.INPAINT_TELEA)
     clean = cv2.inpaint(clean, deviation_mask(rgb, TEXT_OVERLAYS[3:5], thresh=0.028, dilate=9), 8, cv2.INPAINT_TELEA)
     # podium captions sit on a smooth marble face - a vertical blend leaves no smear
     clean = np.clip(fill_vertical_blend(clean.astype(np.float32), CAPTION_BOX, sigma=8), 0, 255).astype(np.uint8)
     clean = cv2.inpaint(clean, hole, 12, cv2.INPAINT_TELEA)
     # melt the big fills so no seams survive
     big = np.maximum(hole, 0)
-    tb = THUMB_BAND
-    big[tb[1] - 8:tb[3] + 8, tb[0] - 8:tb[2] + 8] = 255
     cb = CAPTION_BOX
     big[cb[1] - 6:cb[3] + 6, cb[0] - 6:cb[2] + 6] = 255
     soft = cv2.GaussianBlur(clean.astype(np.float32), (0, 0), 19)
     wgt = cv2.GaussianBlur((big > 0).astype(np.float32), (0, 0), 6)[..., None]
     clean = np.clip(clean.astype(np.float32) * (1 - wgt) + soft * wgt, 0, 255).astype(np.uint8)
+    # the thumbnail rail (glass discs, arrows, labels, dots) is live HTML: lift
+    # it out and rebuild the marble floor beneath from the real floor around it
+    rail = np.maximum(disc_mask((h, w), RAIL_DISCS + RAIL_ARROWS), dark_mask(rgb, [RAIL_TEXT]))
+    keep = np.maximum(rect_mask((h, w), FLOOR_EXCLUDE), poly_mask((h, w), SILK))
+    clean = u8(synth_floor(clean.astype(np.float32) / 255.0, rail, FLOOR_BOX, FLOOR_LINE, exclude=keep))
     bg = Image.fromarray(clean)
     bg.save(os.path.join(OUT, "gjr-bg.webp"), "WEBP", quality=86, method=6)
     bg.save(os.path.join(OUT, "gjr-bg.jpg"), "JPEG", quality=86, optimize=True, progressive=True)

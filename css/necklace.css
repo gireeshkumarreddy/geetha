@@ -80,6 +80,7 @@
   left: 49.93%;
   top: 5.79%;
   width: 26.82%;
+  margin: 0;
   z-index: 2;
 }
 
@@ -87,11 +88,11 @@
   transform: translate3d(-50%, calc((1 - var(--pn, 0)) * -9%), 0)
              scale(calc(0.5 + 0.5 * var(--pn, 0)));
   transform-origin: 50% 14%;
-  opacity: calc(0.05 + 0.95 * min(1, var(--pn, 0) * 1.45));
-  filter: blur(calc((1 - var(--pn, 0)) * 7px));
-  transition: transform 0.18s cubic-bezier(0.25, 0.6, 0.3, 1),
-              opacity 0.18s linear, filter 0.18s linear;
-  will-change: transform, opacity, filter;
+  /* fully opaque and sharp from its first frame - the emergence is scale +
+     travel only (never a faint ghost that reads as blur) */
+  opacity: 1;
+  transition: transform 0.18s cubic-bezier(0.25, 0.6, 0.3, 1);
+  will-change: transform;
 }
 
 .gjn__neck-breathe { position: relative; }
@@ -356,11 +357,12 @@
 /* ------------------------------------------------------------- scroll cue */
 .gjn__cue {
   position: absolute;
-  left: 64.5vw;
-  top: 27svh;
+  left: clamp(16px, 2.4vw, 40px);
+  top: auto;
+  bottom: 7svh;
   z-index: 3;
   color: #6b5936;
-  text-align: center;
+  text-align: left;
 }
 
 .gjn__cue-text {
@@ -573,7 +575,7 @@
   .gjn__rule { margin-bottom: 10px; }
   .gjn__rule i { flex-basis: 90px; }
   .gjn__sub { font-size: 11px; margin-bottom: 12px; }
-  .gjn__desc { font-size: clamp(14px, 3.8vw, 16px); margin-bottom: 18px; }
+  .gjn__desc { display: none; }
   .gjn__cta { padding: 12px 22px; font-size: 11px; gap: 8px; }
 
   .gjn__specs {
@@ -617,7 +619,6 @@
   .gjn__neck-move {
     transform: translateX(-50%) !important;
     opacity: 1 !important;
-    filter: none !important;
     transition: none;
   }
 

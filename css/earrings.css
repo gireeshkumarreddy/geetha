@@ -92,8 +92,8 @@
 }
 
 @keyframes gje-sway {
-  from { rotate: calc(var(--swayr, 1.2deg) * -0.45); }
-  to   { rotate: calc(var(--swayr, 1.2deg) * .45); }
+  from { rotate: calc(var(--swayr, 1.2deg) * -1); }
+  to   { rotate: var(--swayr, 1.2deg); }
 }
 
 .gje__hang img {
@@ -117,11 +117,14 @@
 
 .gje__panel.is-active .gje__panel-label { color: var(--gje-brown); }
 
-/* labels live ON the glass (they sway with their panel) */
+/* labels sit below the glass case (not overlaid on it - on smaller panels
+   the glass artwork leaves too little of its own transparent margin for an
+   in-image label to read cleanly, so it's set just under the case instead) */
 .gje__panel-label {
   position: absolute;
-  left: 8%;
-  right: 8%;
+  left: 0;
+  right: 0;
+  top: calc(100% + 8px);
   text-align: center;
   font-size: clamp(8px, 0.72cqw, 12px);
   font-weight: 500;
@@ -132,13 +135,10 @@
   pointer-events: none;
 }
 
-.gje__panel--side .gje__panel-label { bottom: 7%; left: 14%; right: 14%; line-height: 1.5; }
-
-/* p1's bbox carries its wire column at the left - recentre the label on the glass */
-.gje__panel--side:first-child .gje__panel-label { left: 24%; right: 5%; }
+.gje__panel--side .gje__panel-label { line-height: 1.5; }
 
 .gje__panel--hero .gje__panel-label {
-  bottom: 9.5%;
+  top: calc(100% + 12px);
   font-size: clamp(9px, 0.8cqw, 13.5px);
   letter-spacing: 0.22em;
 }

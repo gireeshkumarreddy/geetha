@@ -38,6 +38,14 @@
 
   sections.forEach((s) => io.observe(s));
 
+  const scrollHint = document.querySelector('.gj-scroll-hint');
+  const finalSection = document.querySelector('footer.gjf');
+  if (scrollHint && finalSection) {
+    new IntersectionObserver(([entry]) => {
+      scrollHint.classList.toggle('is-ending', entry.isIntersecting);
+    }, { threshold: 0.01 }).observe(finalSection);
+  }
+
   /* gentle parallax -------------------------------------------------------- */
   const layers = sections
     .map((s) => ({ s, el: s.querySelector('[data-parallax]') }))
@@ -64,13 +72,39 @@
     pnSpan: parseFloat(sec.dataset.pnSpan) || 0.56,
     sweepHost: sec.querySelector('[data-sweep-host]'),
     swept: false,
+    // vertical scroll -> horizontal travel: a [data-scrollx] track's own
+    // overflow (scrollWidth - viewport) is measured live and driven by p,
+    // windowed by data-scrollx-start/-span so a title/hero beat can hold
+    // before the horizontal journey begins (mirrors the --po/--open windows
+    // elsewhere, just computed here since the travel distance needs layout)
+    scrollx: sec.querySelector('[data-scrollx]'),
+    scrollxStart: parseFloat(sec.dataset.scrollxStart) || 0,
+    scrollxSpan: parseFloat(sec.dataset.scrollxSpan) || 1,
   }));
+
+  /* curtain sections: a section with `data-curtain="#target"` rises over the
+     pinned target (the hero stage). The target receives --cover (0..1, eased)
+     so it can recede, and the section gains .is-settled once it has fully
+     risen into place - its own choreography waits for that moment.      */
+  const curtains = Array.from(document.querySelectorAll('[data-curtain]'))
+    .map((el) => ({ el, target: document.querySelector(el.dataset.curtain) }))
+    .filter((c) => c.target);
 
   let raf = 0;
 
   function apply() {
     raf = 0;
     const vh = window.innerHeight;
+
+    for (const c of curtains) {
+      const r = c.el.getBoundingClientRect();
+      const raw = clamp((vh - r.top) / vh, 0, 1);
+      c.target.style.setProperty('--cover', (reduceMotion.matches ? raw : smooth01(raw)).toFixed(4));
+      // "settled" = the section has all but finished rising; its content
+      // sequence begins here and completes as the last of the rise lands
+      if (r.top <= vh * 0.42) c.el.classList.add('is-settled');
+      else if (r.top > vh * 0.72) c.el.classList.remove('is-settled');
+    }
 
     if (!reduceMotion.matches) {
       for (const { s, el } of layers) {
@@ -107,6 +141,19 @@
         if (it.until !== null) it.el.classList.toggle('is-out', p >= it.until);
       }
       o.sec.classList.toggle('is-settled', p >= 0.94);
+      if (o.scrollx) {
+        // only JS-drive the track while actually pinned (desktop); below the
+        // breakpoint data-sticky isn't sticky, so the track reverts to plain
+        // native horizontal scrolling (touch/swipe) untouched by this code
+        if (pinned) {
+          const wp = clamp((p - o.scrollxStart) / o.scrollxSpan, 0, 1);
+          const travel = o.scrollx.scrollWidth - o.scrollx.parentElement.clientWidth;
+          o.scrollx.style.transform = `translate3d(${(-wp * Math.max(travel, 0)).toFixed(1)}px, 0, 0)`;
+          o.sec.style.setProperty('--xp', wp.toFixed(4));
+        } else if (o.scrollx.style.transform) {
+          o.scrollx.style.transform = '';
+        }
+      }
       if (o.sweepHost) {
         if (p < 0.45) {
           o.swept = false;
@@ -124,7 +171,7 @@
     if (!raf) raf = requestAnimationFrame(apply);
   }
 
-  if (layers.length || pins.length) {
+  if (layers.length || pins.length || curtains.length) {
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', schedule);
     apply();
@@ -230,6 +277,44 @@
     render();
   });
 
+  /* sliding track: a rail whose item list carries `data-rail-track` moves as
+     one strip (translateX by index) instead of crossfading in place, so
+     next/prev reads as the cards physically sliding across.                 */
+  document.querySelectorAll('[data-rail-track]').forEach((track) => {
+    const rail = track.closest('[data-rail]');
+    if (!rail) return;
+    // each item's flex-basis is 100% of the track's own box (it overflows
+    // rather than the track growing), so one step is -100%, not -100%/count
+    rail.addEventListener('railchange', (e) => {
+      track.style.transform = `translateX(${e.detail.index * -100}%)`;
+    });
+  });
+
+  /* hero-image sync: a rail with `data-rail-hero="#sel"` crossfades that
+     target's <img>/<source> to the active item's `data-hero`/`data-hero-webp`
+     - the same "selection swaps a featured display" language as the text
+     featured-piece sync above, extended to swap an image instead.           */
+  document.querySelectorAll('[data-rail]').forEach((rail) => {
+    const heroSel = rail.dataset.railHero;
+    if (!heroSel) return;
+    const hero = document.querySelector(heroSel);
+    const img = hero?.querySelector('img');
+    const source = hero?.querySelector('source');
+    if (!img) return;
+    const items = Array.from(rail.querySelectorAll('[data-rail-item]'));
+    let firstSync = true;
+    rail.addEventListener('railchange', (e) => {
+      const d = items[e.detail.index].dataset;
+      const swap = () => {
+        if (source && d.heroWebp) source.srcset = d.heroWebp;
+        if (d.hero) img.src = d.hero;
+      };
+      if (firstSync) { firstSync = false; swap(); return; }
+      hero.classList.add('is-swapping');
+      window.setTimeout(() => { swap(); hero.classList.remove('is-swapping'); }, 260);
+    });
+  });
+
   /* collection-focus sync: a rail whose items carry `data-focus` gently
      emphasises the matching staged piece (and its `data-bkey` annotation)
      when the active card changes - selection never rearranges the stage    */
@@ -248,6 +333,40 @@
       scope.querySelectorAll(`.gjbn__bangle--${key}, [data-bkey="${key}"]`)
         .forEach((el) => el.classList.add('is-focus'));
     });
+  });
+
+  /* metal tabs: `data-metal-tabs` hosts buttons with `data-metal="gold|silver"`;
+     clicking one shows the sibling `[data-metal-panel]` with the matching
+     value and hides the rest via `.is-out` - the same class the rail
+     controller above already treats as "not on stage" (autoplay pauses,
+     focus-sync ignores it), so a hidden metal's rail goes quiet for free. */
+  document.querySelectorAll('[data-metal-tabs]').forEach((tabs) => {
+    const root = tabs.closest('section') || tabs.parentElement;
+    const buttons = Array.from(tabs.querySelectorAll('[data-metal]'));
+    const panels = Array.from(root.querySelectorAll('[data-metal-panel]'));
+    function apply(metal) {
+      root.setAttribute('data-active-metal', metal);
+      buttons.forEach((b) => {
+        const on = b.dataset.metal === metal;
+        b.classList.toggle('is-active', on);
+        b.setAttribute('aria-selected', String(on));
+      });
+      panels.forEach((p) => {
+        const on = p.dataset.metalPanel === metal;
+        p.classList.toggle('is-out', !on);
+        p.querySelectorAll('[data-rail]').forEach((r) => r.classList.toggle('is-out', !on));
+      });
+      // rails sharing one `data-rail-feature` target overwrite each other on
+      // setup (each fills it once); re-sync from the rail that's now visible
+      const shownRail = root.querySelector(`[data-metal-panel="${metal}"] [data-rail]`);
+      if (shownRail) {
+        const items = Array.from(shownRail.querySelectorAll('[data-rail-item]'));
+        const index = Math.max(0, items.findIndex((el) => el.classList.contains('is-active')));
+        shownRail.dispatchEvent(new CustomEvent('railchange', { detail: { index }, bubbles: true }));
+      }
+    }
+    buttons.forEach((b) => b.addEventListener('click', () => apply(b.dataset.metal)));
+    apply(buttons.find((b) => b.classList.contains('is-active'))?.dataset.metal || buttons[0]?.dataset.metal);
   });
 
   /* pointer parallax: hosts with `data-pointer-parallax` get --mx/--my in
@@ -288,7 +407,7 @@
     });
     el.addEventListener('pointermove', (e) => {
       if (!dragging) return;
-      const deg = clamp((e.clientX - startX) / 70, -2, 2);
+      const deg = clamp((e.clientX - startX) / 38, -5.5, 5.5);
       el.style.transform = `rotate(${deg.toFixed(2)}deg)`;
     });
     const release = () => {

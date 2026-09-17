@@ -135,28 +135,28 @@
    about the bud's base centre, outer groups further than inner ones */
 .gjbn__bud img:nth-child(1) {
   clip-path: inset(0 66% 0 0);
-  transform-origin: 50% 100%;
-  transform: rotate(calc(var(--po) * -38deg)) translateY(calc(var(--po) * 5%));
+  transform-origin: 147% 100%;
+  transform: rotate(calc(var(--po) * -62deg)) translateY(calc(var(--po) * 5%));
 }
 
 .gjbn__bud img:nth-child(2) {
   /* inner-left petal group - the finial column (42-58% above 24%) is excluded
      so the gold cap never splits; it lifts away whole via the fifth layer */
   clip-path: polygon(30% 0, 43% 0, 43% 18%, 52% 18%, 52% 100%, 30% 100%);
-  transform-origin: 50% 100%;
-  transform: rotate(calc(var(--po) * -20deg)) translateY(calc(var(--po) * 3%));
+  transform-origin: 91% 100%;
+  transform: rotate(calc(var(--po) * -30deg)) translateY(calc(var(--po) * 3%));
 }
 
 .gjbn__bud img:nth-child(3) {
   clip-path: polygon(57% 0, 70% 0, 70% 100%, 48% 100%, 48% 18%, 57% 18%);
-  transform-origin: 50% 100%;
-  transform: rotate(calc(var(--po) * 20deg)) translateY(calc(var(--po) * 3%));
+  transform-origin: 9% 100%;
+  transform: rotate(calc(var(--po) * 30deg)) translateY(calc(var(--po) * 3%));
 }
 
 .gjbn__bud img:nth-child(4) {
   clip-path: inset(0 0 0 66%);
-  transform-origin: 50% 100%;
-  transform: rotate(calc(var(--po) * 38deg)) translateY(calc(var(--po) * 5%));
+  transform-origin: -47% 100%;
+  transform: rotate(calc(var(--po) * 62deg)) translateY(calc(var(--po) * 5%));
 }
 
 /* the gold finial lifts away whole (never split between the petal groups) */
@@ -813,7 +813,7 @@
 }
 
 /* ---- gold bangles dissolve (staggered: outer -> inner -> hero) */
-.gjbn__bangle picture { display: block; transition: opacity 0.15s linear, filter 0.15s linear, transform 0.15s linear; }
+.gjbn__bangle picture { display: block; transition: opacity 0.15s linear, transform 0.15s linear; }
 
 .gjbn__bangle--b4, .gjbn__bangle--b5 { --wo: min(1, max(0, calc((var(--p, 0) - 0.575) / 0.07))); }
 .gjbn__bangle--b2, .gjbn__bangle--b3 { --wo: min(1, max(0, calc((var(--p, 0) - 0.615) / 0.07))); }
@@ -822,7 +822,6 @@
 .gjbn__bangle:not(.gjbn__bangle--s) picture {
   opacity: calc(1 - var(--wo, 0));
   transform: scale(calc(1 - 0.05 * var(--wo, 0)));
-  filter: blur(calc(var(--wo, 0) * 5px));
 }
 
 /* ---- silver bangles emerge in place (outer -> inner -> hero finale) */
@@ -835,8 +834,6 @@
   transform: translateY(calc((1 - var(--sw, 0)) * 6%)) scale(calc(0.93 + 0.07 * var(--sw, 0)));
   transform-origin: 50% 85%;
 }
-
-.gjbn__bangle--s picture { filter: blur(calc((1 - var(--sw, 0)) * 5px)); }
 
 .gjbn__bangle--s img { filter: drop-shadow(0 14px 22px rgba(95, 100, 115, 0.2)); }
 
