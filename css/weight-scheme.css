@@ -1,0 +1,202 @@
+/* ==========================================================================
+   Geetha Jewellers — SECTION 12 · Weight Based Schemes
+   --------------------------------------------------------------------------
+   Three ready-made scheme posters (images/scheme1-3, already a finished
+   graphic each - rounded card shape baked into their alpha channel) shown
+   as a fanned, floating 3D deck. Reuses the gjrsCardIn / gjrsCardFloat /
+   gjrsCardDance keyframes declared once in scheme.css (loaded on every
+   page that includes this file) instead of redeclaring identical
+   keyframes under a new name - same entrance-fly-in, idle-drift and
+   hover-dance motion as the Rate Scheme cards above, just applied to a
+   different element. Background reuses the Visit Store section's marble
+   plate (images/gjv-bg).
+   ========================================================================== */
+
+.gjws {
+  --gjws-gold: #a9853c;
+  --gjws-ink: #4a4438;
+  position: relative;
+  background: #f6f0e4;
+  font-family: "Jost", "Segoe UI", system-ui, sans-serif;
+}
+
+.gjws__band {
+  position: relative;
+  background: linear-gradient(180deg, #fbf7ec 0%, #f6efe0 45%, #f1e6d5 100%);
+  padding: clamp(64px, 8vw, 96px) clamp(20px, 5vw, 64px) clamp(80px, 9vw, 112px);
+}
+
+.gjws__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.gjws__bg img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* ----------------------------------------------------------------- header */
+.gjws__head {
+  position: relative;
+  max-width: 640px;
+  margin: 0 auto clamp(48px, 5.5vw, 64px);
+  text-align: center;
+  z-index: 2;
+}
+
+.gjws__lotus { margin: 0 0 8px; font-size: 20px; color: var(--gjws-gold); line-height: 1; }
+
+.gjws__kicker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin: 0 0 10px;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: #8a6f3a;
+}
+
+.gjws__kicker::before, .gjws__kicker::after { content: ""; width: 32px; height: 1px; background: rgba(169, 133, 60, 0.6); }
+
+.gjws__h2 {
+  margin: 0 0 10px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(32px, 4vw, 48px);
+  line-height: 1.06;
+  background: linear-gradient(165deg, #c09a48 15%, #9d7a30 70%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gjws__sub { margin: 0; font-size: clamp(14px, 1.3vw, 17px); color: #6f6046; }
+
+.gjws__sub::after {
+  content: "\2014\2009\25c8\2009\2014";
+  display: block;
+  margin-top: 10px;
+  font-size: 11px;
+  color: rgba(169, 133, 60, 0.7);
+}
+
+/* ------------------------------------------------------------------ cards */
+.gjws__cards {
+  position: relative;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: clamp(24px, 2.6vw, 40px) 0 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: center;
+  gap: clamp(36px, 5vw, 64px);
+  z-index: 2;
+}
+
+/* same self-contained perspective()-in-transform technique as the Rate
+   Scheme tiers: --rot / --ry / --ty (set inline per <li>) fan the three
+   posters out at different angles and heights. */
+.gjws__card {
+  position: relative;
+  transform: perspective(1000px) rotateX(7deg) rotateY(var(--ry, 0deg)) rotateZ(var(--rot, 0deg)) translateY(var(--ty, 0px));
+}
+
+.gjws__card a {
+  display: block;
+  border-radius: 22px;
+  outline-offset: 6px;
+}
+
+.gjws__card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 22px 26px rgba(90, 65, 20, 0.24)) drop-shadow(0 48px 46px rgba(60, 40, 10, 0.18));
+  transition: filter 0.4s ease;
+}
+
+.gjws__card:hover img, .gjws__card:focus-within img {
+  filter: drop-shadow(0 30px 34px rgba(90, 65, 20, 0.3)) drop-shadow(0 58px 54px rgba(60, 40, 10, 0.22));
+}
+
+/* ------------------------------------------------------------ reveal system */
+.js .gjws [data-rv] {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.85s ease var(--d, 0s), transform 1s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0s);
+}
+
+.js .gjws:not(.is-in) [data-rv] { opacity: 0; transform: translateY(16px); }
+
+/* the cards animate rather than transition (gjrsCardIn/Float own their
+   opacity + transform) - opt them out of the generic rule above, same
+   approach as .gjrs__tier in scheme.css. */
+.js .gjws .gjws__card[data-rv],
+.js .gjws:not(.is-in) .gjws__card[data-rv] {
+  transition: none;
+}
+
+.js .gjws:not(.is-in) .gjws__card[data-rv] {
+  opacity: 0;
+  transform: perspective(1000px) rotateX(-38deg) rotateY(calc(var(--ry, 0deg) * 2)) rotateZ(calc(var(--rot, 0deg) * 2.4)) translateY(90px) translateZ(-120px) scale(0.68);
+}
+
+.js .gjws.is-in .gjws__card[data-rv] {
+  opacity: 1;
+  animation-name: gjrsCardIn, gjrsCardFloat;
+  animation-duration: 1s, 6.5s;
+  animation-timing-function: cubic-bezier(0.22, 1.4, 0.36, 1), ease-in-out;
+  animation-delay: var(--d, 0s), calc(var(--d, 0s) + 1s);
+  animation-iteration-count: 1, infinite;
+  animation-fill-mode: both, none;
+}
+
+/* gjrsCardIn stays first in the list with the exact same duration/delay/
+   timing-function/fill-mode as the idle rule above - if it dropped out of
+   the list on hover, un-hovering would make it "reappear" as a brand new
+   animation and restart from its 0% keyframe (opacity: 0), flashing the
+   card invisible for its delay + into its run. Keeping it present and
+   unchanged means only the second slot (float <-> dance) actually swaps. */
+.js .gjws.is-in .gjws__card[data-rv]:hover,
+.js .gjws.is-in .gjws__card[data-rv]:focus-within {
+  animation-name: gjrsCardIn, gjrsCardDance;
+  animation-duration: 1s, 1.1s;
+  animation-timing-function: cubic-bezier(0.22, 1.4, 0.36, 1), ease-in-out;
+  animation-iteration-count: 1, infinite;
+  animation-delay: var(--d, 0s), 0s;
+  animation-fill-mode: both, none;
+  z-index: 5;
+}
+
+/* --------------------------------------------------------------- compact */
+@media (max-width: 1023px) {
+  .gjws__band { padding: 56px clamp(20px, 6vw, 56px) 64px; }
+
+  .gjws__lotus { font-size: 20px; margin-bottom: 8px; }
+  .gjws__kicker { font-size: 11px; gap: 12px; margin-bottom: 10px; }
+  .gjws__kicker::before, .gjws__kicker::after { width: 28px; }
+  .gjws__h2 { font-size: clamp(32px, 8.6vw, 44px); margin-bottom: 8px; }
+  .gjws__sub { font-size: clamp(13.5px, 3.7vw, 16px); }
+  .gjws__sub::after { font-size: 10px; margin-top: 8px; }
+
+  .gjws__cards { grid-template-columns: 1fr; max-width: 340px; gap: 56px; }
+}
+
+/* ------------------------------------------------------- reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .js .gjws [data-rv] { transition: opacity 0.6s ease !important; transform: none !important; }
+  .js .gjws .gjws__card[data-rv],
+  .js .gjws:not(.is-in) .gjws__card[data-rv],
+  .js .gjws.is-in .gjws__card[data-rv],
+  .js .gjws.is-in .gjws__card[data-rv]:hover,
+  .js .gjws.is-in .gjws__card[data-rv]:focus-within,
+  .gjws__card:hover, .gjws__card:focus-within {
+    animation: none !important;
+    transform: none !important;
+    transition: opacity 0.6s ease !important;
+  }
+}

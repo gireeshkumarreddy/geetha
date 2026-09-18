@@ -17,7 +17,12 @@
   --ab-ink: #3c2d15;
   --ab-ivory: #f6f0e3;
   position: relative;
+  z-index: 5;
+  /* rises over the pinned hero stage during its curtain hold (see stage.css) */
+  margin-top: -100vh;
+  margin-top: -100svh;
   background: var(--ab-ivory);
+  box-shadow: 0 -30px 70px rgba(60, 40, 12, 0.24);
   font-family: "Jost", "Segoe UI", system-ui, sans-serif;
   overflow: hidden;
 }
@@ -493,11 +498,17 @@
   will-change: opacity, transform;
 }
 
-.js .gj-about [data-reveal="left"] { transform: translateX(-46px) scale(1.02); }
+.js .gj-about [data-reveal="left"] { transform: translateX(-46px); }
 .js .gj-about [data-reveal="right"] { transform: translateX(42px); }
-.js .gj-about [data-reveal="up"] { transform: translateY(30px); }
+.js .gj-about [data-reveal="up"] { transform: translateY(26px); }
 
-.js .gj-about.is-in [data-reveal] {
+/* the value boxes: Tradition arrives from the left, Purity from the right */
+.js .gj-about__values li[data-reveal="left"] { transform: translateX(-64px); }
+.js .gj-about__values li[data-reveal="right"] { transform: translateX(64px); }
+
+/* the sequence starts once the section has SETTLED into the viewport
+   (.is-settled from js/sections.js), not while it is still rising */
+.js .gj-about.is-settled [data-reveal] {
   opacity: 1;
   transform: none;
 }
@@ -569,8 +580,11 @@
 }
 
 @media (max-width: 639px) {
-  .gj-about__values { grid-template-columns: 1fr; max-width: 340px; margin-left: auto; margin-right: auto; }
-  .gj-about__values li { padding: 20px 16px 22px; }
+  .gj-about__values { grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: none; }
+  .gj-about__values li { padding: 14px 6px 16px; }
+  .gj-about__values svg { width: 22px; height: 22px; }
+  .gj-about__values h3 { font-size: 13px; margin: 8px 0 0; }
+  .gj-about__values p { display: none; }
 }
 
 /* ------------------------------------------------------- reduced motion */

@@ -24,6 +24,9 @@ import cv2
 import numpy as np
 from PIL import Image
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from floor import dark_mask, rect_mask, synth_floor  # noqa: E402
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "images")
 DEFAULT_SRC = (r"C:/Users/giris/AppData/Local/Temp/claude/C--Users-giris-OneDrive-Desktop-Geeta"
@@ -39,8 +42,14 @@ TEXT_OVERLAYS = [                        # deviation-matte inpaint (strokes only
     (180, 742, 1385, 828),               # four card captions
 ]
 CARDS = [(205, 572, 462, 742), (500, 572, 757, 742), (795, 572, 1052, 742), (1090, 572, 1347, 742)]
+SLIVER = (1344, 560, 1366, 756)          # thin rule left of "a closer look"
 TILE_BOXES = [(1160, 98, 1222, 156), (1160, 168, 1222, 226), (1160, 238, 1222, 296),
               (1160, 308, 1222, 366), (1160, 378, 1222, 438)]
+FLOOR_BOX = (170, 550, 1400, 864)        # the marble floor band (vase to right column)
+FLOOR_LINE = 552                         # podium base / floor contact
+FLOOR_EXCLUDE = [(150, 550, 196, 864)]   # the vase + its blossoms: real, never floor samples
+CARD_BAND = (197, 556, 1366, 758)        # cards, their gaps + shadows and the rule sliver, as one piece
+CAPTIONS = (200, 742, 1385, 828)         # card captions
 
 
 def fill_vertical_blend(img, box, margin=12, sigma=9):
@@ -191,35 +200,29 @@ def main():
             "w": round((bx1 - bx0) / w, 4), "h": round((by1 - by0) / h, 4),
         }, f, indent=2)
 
-    # ---- environment: the card rectangles go first (so nothing can smear their
-    # colours around), then the text strokes, then the icon-tile ghosts
-    clean_f = img8.astype(np.float32)
-    for box in CARDS:
-        x0, y0, x1, y1 = box
-        clean_f = fill_vertical_blend(clean_f, (x0 - 3, y0 - 3, x1 + 3, y1 + 3), sigma=11)
-    clean = np.clip(clean_f, 0, 255).astype(np.uint8)
-
-    clean = cv2.inpaint(clean, deviation_mask(rgb, TEXT_OVERLAYS), 8, cv2.INPAINT_TELEA)
+    # ---- environment: text strokes first (not the captions - a diffusion fill
+    # next to the cards would drag their colours onto the floor; the floor pass
+    # lifts them itself), then the icon-tile ghosts, then the necklace hole
+    clean = cv2.inpaint(img8, deviation_mask(rgb, TEXT_OVERLAYS[:4]), 8, cv2.INPAINT_TELEA)
 
     clean_f = clean.astype(np.float32)
     for box in TILE_BOXES:
         clean_f = fill_vertical_blend(clean_f, box, sigma=6)
     clean = np.clip(clean_f, 0, 255).astype(np.uint8)
 
-    big = np.zeros((h, w), np.uint8)
     hole = cv2.dilate((nmask * 255).astype(np.uint8), kernel(9))
-    big = np.maximum(big, hole)
     sx0, sy0, sx1, sy1 = SHADOW_BOX
-    big[sy0:sy1, sx0:sx1] = 255
-    # let the melt pass also soften the blend-rectangle seams + a leftover sliver
-    for (x0, y0, x1, y1) in CARDS:
-        big[y0 - 8:y1 + 8, x0 - 8:x1 + 8] = np.maximum(big[y0 - 8:y1 + 8, x0 - 8:x1 + 8], 255)
-    big[568:752, 1344:1366] = 255
-    clean = cv2.inpaint(clean, big, 12, cv2.INPAINT_TELEA)
-    # melt the large fills into soft marble (no angular Telea seams)
-    soft = cv2.GaussianBlur(clean.astype(np.float32), (0, 0), 19)
-    wgt = cv2.GaussianBlur((big > 0).astype(np.float32), (0, 0), 6)[..., None]
-    clean = np.clip(clean.astype(np.float32) * (1 - wgt) + soft * wgt, 0, 255).astype(np.uint8)
+    hole[sy0:sy1, sx0:sx1] = 255
+    clean = cv2.inpaint(clean, hole, 12, cv2.INPAINT_TELEA)
+
+    # the floor band: the reference hides it under the four cards (plus their
+    # shadows and captions) - rebuilt as one piece of polished marble from the
+    # real floor above and below it, with the podium mirrored into it; never
+    # blended or blurred (the 38px gaps between the cards are too narrow to
+    # keep without seams, so the whole band is one continuous surface)
+    holes = np.maximum(rect_mask((h, w), [CARD_BAND]), dark_mask(rgb, [CAPTIONS]))
+    clean = u8(synth_floor(clean.astype(np.float32) / 255.0, holes, FLOOR_BOX, FLOOR_LINE,
+                           exclude=rect_mask((h, w), FLOOR_EXCLUDE), mode="full", mirror=0.45, feather=5))
     bg = Image.fromarray(clean)
     bg.save(os.path.join(OUT, "gjn-bg.webp"), "WEBP", quality=86, method=6)
     bg.save(os.path.join(OUT, "gjn-bg.jpg"), "JPEG", quality=86, optimize=True, progressive=True)

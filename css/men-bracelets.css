@@ -1,0 +1,272 @@
+/* ==========================================================================
+   Geetha Jewellers — SECTION · Men's Bracelets — Opening Mountain
+   --------------------------------------------------------------------------
+   Same pinned-scroll mechanism as the bangles section (data-progress +
+   data-sticky write a continuous --p to the section; js/sections.js already
+   does this generically, no section-specific JS needed). Everything below
+   is pure-CSS min()/max() windows on --p, the identical technique
+   bangles.css uses for its petal-opening (see --po there): --open ramps the
+   two rock halves apart from an interlocked centre, then five --w windows
+   each reveal one bracelet in turn, rising out of the gap the rocks made -
+   scale + rotate + rise, not a fade. Continuous and fully reversible.
+   ========================================================================== */
+
+.gjbr {
+  --gjbr-gold: #a9853c;
+  --gjbr-brown: #6b4d1e;
+  --gjbr-ink: #3f3527;
+  --gjbr-body: #7a6a52;
+  --gjbr-ivory: #f8f3e8;
+  --gjbr-travel: 420vh;
+  /* mountains fully apart by p=0.18; the remaining travel drives a
+     continuous index (0…4) across the five bracelets, each step ~0.16 of
+     the timeline - see --gjbr-idx below, used by .gjbr__piece to place a
+     left neighbour / hero / right neighbour as it advances */
+  --open: min(1, max(0, calc((var(--p, 0) - 0.03) / 0.15)));
+  --gjbr-idx: min(4, max(0, calc((var(--p, 0) - 0.16) / 0.16)));
+  --gjbr-slot: 33cqw;
+  position: relative;
+  background: var(--gjbr-ivory);
+  font-family: "Jost", "Segoe UI", system-ui, sans-serif;
+}
+
+.gjbr__track {
+  position: relative;
+  height: calc(100vh + var(--gjbr-travel));
+  height: calc(100svh + var(--gjbr-travel));
+}
+
+.gjbr__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  background: var(--gjbr-ivory);
+}
+
+.gjbr::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 64px;
+  z-index: 6;
+  pointer-events: none;
+  background: linear-gradient(to bottom, #f8f3e8, rgba(248, 243, 232, 0));
+}
+
+/* ------------------------------------------------- fixed-aspect scene layer */
+.gjbr__scene {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: max(100vw, 177.78svh);
+  aspect-ratio: 1672 / 941;
+  container-type: size;
+}
+
+.gjbr__bg { position: absolute; inset: 0; z-index: 0; }
+.gjbr__bg img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.gjbr__glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 26%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 224, 150, 0.6), rgba(255, 224, 150, 0) 68%);
+  filter: blur(6px);
+  opacity: calc(0.35 + var(--open) * 0.5);
+  transition: opacity 0.2s linear;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------- rocks */
+/* rock-left and rock-right are a mirrored pair - one wide ridge split down
+   the middle, each half's broken/debris edge facing the centre seam where
+   they meet when closed. Floor-anchored (rocks rest on the ground, not
+   vertically centred) and sized identically since both share one aspect. */
+.gjbr__rock {
+  position: absolute;
+  bottom: 9%;
+  width: 76%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.gjbr__rock picture, .gjbr__rock img { display: block; width: 100%; height: auto; }
+.gjbr__rock img { filter: drop-shadow(0 30px 46px rgba(50, 32, 10, 0.4)); }
+
+.gjbr__rock--l {
+  left: calc(-16% - var(--open) * 26%);
+  transform: rotate(calc(var(--open) * -2.5deg)) scale(calc(1 + var(--open) * 0.04));
+  transform-origin: 80% 100%;
+}
+
+.gjbr__rock--r {
+  right: calc(-16% - var(--open) * 26%);
+  transform: rotate(calc(var(--open) * 2.5deg)) scale(calc(1 + var(--open) * 0.04));
+  transform-origin: 20% 100%;
+}
+
+/* ------------------------------------------------------------- bracelets */
+/* a 3-up coverflow: --gjbr-idx (a continuous 0…4 float driven by scroll)
+   minus each piece's own --i gives its signed distance from the hero slot
+   (--d). The hero (d=0) sits centred, full size, upright; a neighbour at
+   |d|=1 sits one slot to the side, smaller, dimmer and tilted toward the
+   hero; anything past that fades out - so only one left, the hero, and one
+   right are ever visible, and the set slides continuously as --gjbr-idx advances */
+.gjbr__piece {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  width: 24%;
+  margin: 0;
+  z-index: 3;
+  transform-origin: 50% 70%;
+  pointer-events: none;
+  --i: 0;
+  --d: calc(var(--i) - var(--gjbr-idx));
+  --ad: max(var(--d), calc(var(--d) * -1));
+  --c: min(1, max(0, calc(1 - var(--ad) * 0.55)));
+  opacity: var(--c);
+  transform:
+    translate(calc(-50% + var(--d) * var(--gjbr-slot)), calc(-50% + (1 - var(--c)) * 7cqh))
+    scale(calc(0.55 + var(--c) * 0.45))
+    rotate(calc(var(--d) * -8deg));
+}
+
+.gjbr__piece picture, .gjbr__piece img { display: block; width: 100%; height: auto; }
+.gjbr__piece img { filter: drop-shadow(0 20px 26px rgba(60, 40, 10, 0.4)); }
+
+/* the caption reads only for the hero - it fades out much faster than the
+   piece's own opacity so neighbour labels don't crowd the centre one */
+.gjbr__piece figcaption {
+  position: absolute;
+  left: 50%;
+  top: 104%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: "Cinzel", "Jost", serif;
+  font-size: clamp(10px, 1.1cqw, 15px);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gjbr-ink);
+  text-shadow: 0 1px 8px rgba(255, 252, 244, 0.85), 0 1px 2px rgba(255, 252, 244, 0.9);
+  opacity: min(1, max(0, calc(1 - var(--ad) * 3)));
+}
+
+.gjbr__piece--1 { --i: 0; }
+.gjbr__piece--2 { --i: 1; }
+.gjbr__piece--3 { --i: 2; }
+.gjbr__piece--4 { --i: 3; }
+.gjbr__piece--5 { --i: 4; }
+
+/* ------------------------------------------------------------- copy */
+/* the editorial intro lives over the closed mountain and dissolves away
+   as it opens, handing the stage fully to the product sequence           */
+.gjbr__copy {
+  position: absolute;
+  left: 50%;
+  top: 18%;
+  transform: translate(-50%, -50%);
+  width: min(90%, 420px);
+  z-index: 4;
+  text-align: center;
+  opacity: 1;
+  pointer-events: none;
+}
+
+.gjbr__eyebrow {
+  margin: 0 0 14px;
+  color: var(--gjbr-gold);
+  font-size: clamp(10px, 0.85vw, 13px);
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+}
+
+/* same gold-gradient text treatment as the rings collection title (.gjr__title) */
+.gjbr__title {
+  margin: 0 0 14px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 600;
+  font-size: clamp(30px, 3.2vw, 52px);
+  line-height: 1.05;
+  background: linear-gradient(160deg, #8a6420 10%, #b98f3e 45%, #6f4f1a 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gjbr__orn { margin: 0; display: flex; align-items: center; justify-content: center; }
+.gjbr__orn i { display: block; width: 60px; height: 1px; margin: 0 auto; background: linear-gradient(to right, rgba(169, 133, 60, 0), var(--gjbr-gold) 50%, rgba(169, 133, 60, 0)); }
+
+/* ------------------------------------------------------------------ cta */
+.gjbr__cta-wrap {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(20px, 4svh, 40px);
+  transform: translateX(-50%);
+  margin: 0;
+  z-index: 5;
+  opacity: var(--open);
+  transition: opacity 0.3s ease;
+}
+
+/* styled to match the bangles section's "Enquire Now" CTA (.gjbn__cta):
+   square corners, translucent outlined pill replaced with a plain bordered
+   tag, and the shared site-wide WhatsApp icon in place of the arrow */
+.gjbr__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 26px;
+  border: 1px solid rgba(169, 133, 60, 0.75);
+  background: rgba(255, 252, 244, 0.4);
+  color: var(--gjbr-brown);
+  text-decoration: none;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: background 0.35s ease, color 0.35s ease;
+}
+
+.gjbr__cta:hover, .gjbr__cta:focus-visible { background: var(--gjbr-gold); color: #fffcf4; }
+
+/* --------------------------------------------------------------- compact */
+@media (max-width: 1023px) {
+  /* the section stays pinned here too (same track/stage mechanism as
+     desktop, inherited unchanged below) so the rock-opening + bracelet
+     coverflow sequence finishes playing before scrolling is allowed to move
+     past this section into the next one - .gjbr__copy/.gjbr__cta-wrap are
+     already centred overlays on desktop (not a side column like the rings
+     section), so they carry over directly; only the rock/piece sizing is
+     re-tuned for a narrow screen */
+  .gjbr__title { font-size: clamp(24px, 7.4vw, 38px); }
+
+  /* the desktop --open offset (-16% - open*26%) is tuned for a 76%-wide
+     rock; re-anchored here so a bigger, closer-set pair stays visible and
+     stays near the centre through the whole parting motion instead of
+     spreading out to the frame edges. */
+  .gjbr__rock { width: 58%; }
+  .gjbr__rock--l { left: calc(2% - var(--open) * 14%); }
+  .gjbr__rock--r { right: calc(2% - var(--open) * 14%); }
+  .gjbr { --gjbr-slot: 27cqw; }
+  .gjbr__piece { width: 27%; }
+  .gjbr__piece figcaption { font-size: 11px; }
+}
+
+/* ------------------------------------------------------- reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .gjbr__rock, .gjbr__piece, .gjbr__copy, .gjbr__glow, .gjbr__cta-wrap { transition: none; }
+}
