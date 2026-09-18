@@ -308,7 +308,7 @@
     }
 
     // hint fades as soon as the choreography starts
-    hint.style.opacity = clamp(1 - t * 5, 0, 1).toFixed(3);
+    if (hint) hint.style.opacity = clamp(1 - t * 5, 0, 1).toFixed(3);
 
     // lighting: the arch bloom and the floor pool brighten when a display is presented,
     // the sheen drifts across the gold architecture, the environment barely moves

@@ -392,70 +392,112 @@
   list-style: none;
 }
 
-.gjr__thumb {
-  --disc: clamp(60px, 7.8vw, 122px);
-  position: relative;
+.gjr__rail-items > li {
   flex: 1 1 0;
+  min-width: 0;
+  list-style: none;
+}
+
+.gjr__thumb {
+  position: relative;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
   background: none;
   border: 0;
   padding: 0;
   cursor: pointer;
   color: var(--gjr-ink);
   font: inherit;
+  transition: transform 0.4s cubic-bezier(0.2, 1, 0.3, 1);
 }
 
-/* gold ring for the active state — lives on the button so the disc can clip */
-.gjr__thumb::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: calc(var(--disc) / 2);
-  width: calc(var(--disc) * 1.34);
-  height: calc(var(--disc) * 1.34);
-  transform: translate(-50%, -50%) scale(0.82);
-  border-radius: 50%;
-  border: 2px solid rgba(190, 152, 70, 0.9);
-  box-shadow: 0 10px 24px rgba(150, 110, 50, 0.2), 0 0 0 6px rgba(255, 250, 238, 0.3);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.45s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
-}
+.gjr__thumb::before { display: none; }
 
-.gjr__thumb.is-active::before { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-
-.gjr__thumb-disc {
+.gjr__card {
   position: relative;
-  width: var(--disc);
-  aspect-ratio: 1;
-  border-radius: 50%;
+  width: 100%;
+  aspect-ratio: 0.78;
+  border-radius: 12px;
   overflow: hidden;
-  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  box-shadow: 0 10px 24px rgba(40, 30, 15, 0.18), 0 2px 6px rgba(0, 0, 0, 0.08);
+  background: #2b2217;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
 }
 
-.gjr__thumb-disc img {
-  width: 116%;
-  height: 116%;
-  margin: -8% 0 0 -8%;
+.gjr__card-fullimg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  display: block;
+  transition: transform 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+}
+
+.gjr__thumb:hover .gjr__card-fullimg {
+  transform: scale(1.08);
+}
+
+/* Top Right WhatsApp icon */
+.gjr__card-wa-icon {
+  position: absolute;
+  top: clamp(6px, 0.8vw, 10px);
+  right: clamp(6px, 0.8vw, 10px);
+  z-index: 4;
+  width: clamp(24px, 2.2vw, 34px);
+  height: clamp(24px, 2.2vw, 34px);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
+  transition: transform 0.35s cubic-bezier(0.2, 1, 0.3, 1);
+}
+
+.gjr__card-wa-icon img {
+  width: 100%;
+  height: 100%;
   display: block;
 }
 
-.gjr__thumb h4 {
-  margin: clamp(8px, 1.4svh, 14px) 0 2px;
-  font-size: clamp(8.5px, 0.72vw, 12px);
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  transition: color 0.35s ease;
+.gjr__card-wa-icon:hover {
+  transform: scale(1.18) rotate(-6deg);
 }
 
-.gjr__thumb small {
-  font-size: clamp(8px, 0.66vw, 11px);
-  letter-spacing: 0.2em;
-  color: #9b8a68;
+/* Bottom title overlay — no gradient scrim, full image stays visible */
+.gjr__card-bottom-gradient {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: clamp(8px, 1vw, 14px);
+  z-index: 3;
+  pointer-events: none;
+}
+
+.gjr__card-bottom-gradient h4 {
+  margin: 0;
+  font-family: "Cinzel", "Jost", serif;
+  font-size: clamp(9.5px, 0.78vw, 13px);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gjr-ink);
+  text-shadow:
+    -1px -1px 0 rgba(255, 252, 244, 0.95), 1px -1px 0 rgba(255, 252, 244, 0.95),
+    -1px 1px 0 rgba(255, 252, 244, 0.95), 1px 1px 0 rgba(255, 252, 244, 0.95),
+    0 1px 2px rgba(255, 252, 244, 0.7);
+  line-height: 1.25;
+}
+
+/* Floating animation on hover/focus only — cards stay in their default
+   resting state otherwise, including the rail's initially-active thumb */
+.gjr__thumb:hover .gjr__card,
+.gjr__thumb:focus-visible .gjr__card {
+  border-color: rgba(230, 190, 85, 0.95);
+  box-shadow: 0 16px 36px rgba(180, 140, 50, 0.38), 0 0 0 2px rgba(212, 175, 55, 0.5);
+  transform: translateY(-6px);
 }
 
 .gjr__thumb small::before,
@@ -517,83 +559,99 @@
 
 /* --------------------------------------------------------------- compact */
 @media (max-width: 1023px) {
-  .gjr__track { height: auto; }
+  /* the section stays pinned here too (same track/stage/crossfade mechanism
+     as desktop, inherited unchanged below) so the gold→silver rail
+     sequence finishes playing before scrolling is allowed to move past this
+     section into the next one - only the overlay content is re-laid-out and
+     re-scaled for a narrow screen */
+  .gjr__callout { display: none; }     /* spatial annotations don't read at this scale */
+  /* the scene is far wider than the mobile crop (same cover-crop technique
+     used everywhere else in this codebase), so the exploded-ring captions -
+     positioned as fixed % of that wide scene - land partly off the visible
+     slice at this width; hidden here the same way the callouts are above */
+  .gjr__caption { display: none; }
 
-  .gjr__stage {
-    position: static;
-    height: auto;
-    overflow: visible;
-    padding-bottom: 40px;
+  /* the pinned stage now frames the ring imagery to a shorter centred band
+     (see .gjr__view below), leaving open space above it - the editorial
+     text sits there instead of overlaying the artwork */
+  .gjr__copy {
+    left: 20px;
+    right: 20px;
+    top: 3svh;
+    width: auto;
+    text-align: center;
   }
 
+  .gjr__eyebrow { justify-content: center; font-size: 10px; margin-bottom: 8px; }
+  .gjr__title { font-size: clamp(24px, 7vw, 34px); margin-bottom: 8px; }
+  .gjr__orn { justify-content: center; }
+  .gjr__desc { display: none; }
+  .gjr__cta { padding: 10px 18px; font-size: 10px; gap: 6px; }
+  .gjr__cue { left: 20px; top: auto; bottom: 30svh; }
+
+  /* the scene's cover-crop formula (see the base .gjr__scene rule) sizes
+     itself off the FULL pinned stage height on mobile, which - for this
+     section's off-centre two-ring composition (unlike the single-centred
+     hero other sections use this same technique for) - crops in far too
+     tight and leaves the rings looking oversized and off-centre. Framing
+     the scene to a shorter band instead (as the section used to be sized
+     before it was pinned) keeps far more of the composition in view.
+     Anchored from the top (right below the copy block) and sized to reach
+     down near the stage's own bottom edge, rather than centred with a
+     fixed height, so the pinned viewport is filled edge-to-edge instead of
+     leaving a stretch of empty background below the rail. */
   .gjr__view {
-    position: relative;
-    height: clamp(320px, 52svh, 520px);
+    top: 24svh;
+    bottom: auto;
+    height: clamp(340px, 58svh, 560px);
     overflow: hidden;
   }
 
   .gjr__scene {
-    width: max(100%, calc(clamp(320px, 52svh, 520px) * 1.7778));
+    width: max(100%, calc(clamp(340px, 58svh, 560px) * 1.7778));
     top: 50%;
   }
 
-  .gjr__callout { display: none; }     /* spatial annotations don't read at this scale */
-  .gjr__caption h3 { font-size: 11px; }
-  .gjr__caption p { font-size: 9px; }
-
-  .gjr__copy {
-    position: relative;
-    inset: auto;
-    width: auto;
-    padding: 46px clamp(20px, 6vw, 56px) 8px;
-  }
-
-  .gjr__eyebrow { font-size: 11px; margin-bottom: 10px; }
-  .gjr__title { font-size: clamp(32px, 8.4vw, 46px); margin-bottom: 10px; }
-  .gjr__desc { font-size: clamp(14px, 3.8vw, 16px); margin-bottom: 18px; }
-  .gjr__cta { padding: 12px 22px; font-size: 11px; gap: 8px; }
-  .gjr__cue { display: none; }
-
-  .gjr__aside {
-    position: relative;
-    inset: auto;
-    width: auto;
-    padding: 30px clamp(20px, 6vw, 56px) 6px;
-  }
-
-  .gjr__aside h3 { font-size: 24px; }
-  .gjr__aside > p { font-size: 14px; }
-  .gjr__aside li { font-size: 13.5px; }
-  .gjr__aside li svg { flex-basis: 24px; height: 24px; }
-
+  /* the secondary feature list is desktop-only real estate - on a pinned
+     mobile stage there isn't room for it alongside the copy + rail without
+     crowding, so it stays hidden here (the rest of the pin/crossfade still
+     plays the same as desktop) */
+  .gjr__aside { display: none; }
   .gjr__forever { display: none; }
 
+  /* sits on the ring image's own bottom edge (not floating in empty space
+     below it), matching how the rail overlays the podium on desktop */
   .gjr__rail {
-    position: relative;
-    left: auto;
-    bottom: auto;
-    transform: none;
+    left: 16px;
+    right: 16px;
+    bottom: 2svh;
     width: auto;
-    padding: 26px clamp(16px, 5vw, 48px) 0;
+    transform: none;
   }
 
-  .gjr__rail-items { gap: 10px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
+  /* overflow-x:auto forces overflow-y to clip too (no way to scroll one
+     axis and leave the other open), and with no buffer that flattened
+     every card's box-shadow into a hard line along its top/bottom edge
+     instead of the soft glow it has everywhere else on the site. The
+     container is auto-height, so extra padding just gives the shadow
+     room to render without being clipped — it doesn't shift the cards or
+     need a compensating margin. The horizontal scroll edges get a fade
+     mask (same technique the review cards already use) instead of a
+     negative margin, which would risk pushing the rail past the viewport
+     and causing page-wide horizontal scroll. */
+  .gjr__rail-items {
+    gap: 10px;
+    overflow-x: auto;
+    padding: 10px 4px 20px;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+    scrollbar-width: none;
+  }
   .gjr__rail-items::-webkit-scrollbar { display: none; }
-  .gjr__thumb { flex: 0 0 96px; --disc: 76px; }
-  .gjr__thumb h4 { font-size: 9px; }
+  .gjr__rail-items > li { flex: 0 0 108px; }
+  .gjr__thumb { --disc: 76px; }
+  .gjr__thumb h4 { font-size: 10px; }
   .gjr__arrow { display: none; }
-
-  /* silver phase = its own flow block; nothing folds away on mobile */
-  .gjr__view--silver {
-    position: relative;
-    height: clamp(300px, 48svh, 480px);
-    opacity: 1;
-    pointer-events: auto;
-    margin-top: 34px;
-  }
-
-  .gjr__sheen { display: none; }
-  .js .gjs__ring[data-at] { transform: none; }
 }
 
 
@@ -601,24 +659,21 @@
    SILVER STATE (keyframe 04) - gold → silver material transformation
    ========================================================================== */
 
-/* gold phase leaving (desktop pinned timeline only - mobile shows both states
-   as sequential flow blocks, so nothing may hide there) */
-@media (min-width: 1024px) {
-  .js .gjr [data-until] { pointer-events: auto; }
+/* gold phase leaving (pinned timeline, both desktop and mobile) */
+.js .gjr [data-until] { pointer-events: auto; }
 
-  .js .gjr [data-until].is-out {
-    opacity: 0 !important;
-    pointer-events: none;
-    transition: opacity 0.7s ease, transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .js .gjr .gjr__copy [data-until].is-out,
-  .js .gjr .gjr__aside [data-until].is-out { transform: translateY(-12px); }
-
-  /* the exploded gold rings fold ~2/3 back toward compact while fading */
-  .gjr__group.is-out { --pn: 0.35; opacity: 0 !important; }
-  .gjr__group.is-out .gjr__piece { transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1); }
+.js .gjr [data-until].is-out {
+  opacity: 0 !important;
+  pointer-events: none;
+  transition: opacity 0.7s ease, transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+.js .gjr .gjr__copy [data-until].is-out,
+.js .gjr .gjr__aside [data-until].is-out { transform: translateY(-12px); }
+
+/* the exploded gold rings fold ~2/3 back toward compact while fading */
+.gjr__group.is-out { --pn: 0.35; opacity: 0 !important; }
+.gjr__group.is-out .gjr__piece { transition: transform 0.9s cubic-bezier(0.4, 0, 0.2, 1); }
 
 /* silver scene layer: crossfades in over the gold view ---------------------- */
 .gjr__view--silver {

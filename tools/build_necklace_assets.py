@@ -214,10 +214,6 @@ def main():
     sx0, sy0, sx1, sy1 = SHADOW_BOX
     hole[sy0:sy1, sx0:sx1] = 255
     clean = cv2.inpaint(clean, hole, 12, cv2.INPAINT_TELEA)
-    # melt the necklace fill into soft marble (no angular Telea seams)
-    soft = cv2.GaussianBlur(clean.astype(np.float32), (0, 0), 19)
-    wgt = cv2.GaussianBlur((hole > 0).astype(np.float32), (0, 0), 6)[..., None]
-    clean = np.clip(clean.astype(np.float32) * (1 - wgt) + soft * wgt, 0, 255).astype(np.uint8)
 
     # the floor band: the reference hides it under the four cards (plus their
     # shadows and captions) - rebuilt as one piece of polished marble from the
