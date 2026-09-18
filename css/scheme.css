@@ -1,0 +1,313 @@
+/* ==========================================================================
+   Geetha Jewellers — SECTION 11 · Rate Scheme (monthly gold savings scheme)
+   --------------------------------------------------------------------------
+   Same warm cream/gold language as the rest of the site, but deliberately
+   calmer than the storefront section above it: this is money and numbers,
+   so the four tier cards only reveal-in and lift slightly on hover - no
+   idle float. A three-step strip explains the mechanics, and the CTA
+   matches the site-wide "Enquire Now" ghost button (see store.css/necklace
+   .css etc.) rather than inventing a new style.
+   ========================================================================== */
+
+.gjrs {
+  --gjrs-gold: #a9853c;
+  --gjrs-ink: #4a4438;
+  position: relative;
+  background: #f3ead9;
+  font-family: "Jost", "Segoe UI", system-ui, sans-serif;
+}
+
+.gjrs__band {
+  position: relative;
+  background: linear-gradient(180deg, #f1e6d5 0%, #f6efe0 45%, #fbf7ec 100%);
+  padding: clamp(64px, 8vw, 96px) clamp(20px, 5vw, 64px) clamp(56px, 7vw, 84px);
+}
+
+/* ----------------------------------------------------------------- header */
+.gjrs__head {
+  position: relative;
+  max-width: 640px;
+  margin: 0 auto clamp(40px, 5vw, 56px);
+  text-align: center;
+  z-index: 2;
+}
+
+.gjrs__lotus { margin: 0 0 8px; font-size: 20px; color: var(--gjrs-gold); line-height: 1; }
+
+.gjrs__kicker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin: 0 0 10px;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: #8a6f3a;
+}
+
+.gjrs__kicker::before, .gjrs__kicker::after { content: ""; width: 32px; height: 1px; background: rgba(169, 133, 60, 0.6); }
+
+.gjrs__h2 {
+  margin: 0 0 10px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(32px, 4vw, 48px);
+  line-height: 1.06;
+  background: linear-gradient(165deg, #c09a48 15%, #9d7a30 70%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gjrs__sub { margin: 0; font-size: clamp(14px, 1.3vw, 17px); color: #6f6046; }
+
+.gjrs__sub::after {
+  content: "\2014\2009\25c8\2009\2014";
+  display: block;
+  margin-top: 10px;
+  font-size: 11px;
+  color: rgba(169, 133, 60, 0.7);
+}
+
+/* ------------------------------------------------------------------ tiers */
+.gjrs__tiers {
+  position: relative;
+  max-width: 1180px;
+  margin: 0 auto clamp(48px, 5.5vw, 72px);
+  padding: clamp(20px, 2vw, 32px) 0 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(30px, 3.6vw, 46px);
+  z-index: 2;
+}
+
+/* floating 3D tiles: a constant forward lean (rotateX) plus a per-card
+   rotateY/rotateZ/translateY mix (--ry / --rot / --ty, set inline per
+   <li>) so the row reads as a loosely fanned, tilted deck rather than a
+   flat grid. gjrsCardFloat idles them independently once revealed;
+   gjrsCardIn (see below) plays once, arriving out of depth, and its final
+   keyframe matches the float's own resting frame so the handoff is
+   seamless. perspective() is inline in the transform list, so each card
+   is a self-contained 3D plane - no parent perspective/preserve-3d setup
+   needed. */
+.gjrs__tier {
+  position: relative;
+  text-align: center;
+  border-radius: 18px;
+  background: linear-gradient(165deg, rgba(255, 253, 248, 0.95), rgba(250, 242, 226, 0.88));
+  border: 1px solid rgba(169, 133, 60, 0.28);
+  box-shadow: 0 18px 38px rgba(90, 65, 20, 0.12), 0 4px 12px rgba(90, 65, 20, 0.06);
+  padding: clamp(30px, 3vw, 38px) clamp(16px, 1.8vw, 22px) clamp(22px, 2.2vw, 26px);
+  transform: perspective(1000px) rotateX(7deg) rotateY(var(--ry, 0deg)) rotateZ(var(--rot, 0deg)) translateY(var(--ty, 0px));
+  transition: box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+@keyframes gjrsCardFloat {
+  0%, 100% { transform: perspective(1000px) rotateX(7deg) rotateY(var(--ry, 0deg)) rotateZ(var(--rot, 0deg)) translateY(var(--ty, 0px)); }
+  50% { transform: perspective(1000px) rotateX(10deg) rotateY(calc(var(--ry, 0deg) * -1)) rotateZ(calc(var(--rot, 0deg) * -1)) translateY(calc(var(--ty, 0px) - 16px)); }
+}
+
+@keyframes gjrsCardIn {
+  0% {
+    opacity: 0;
+    transform: perspective(1000px) rotateX(-38deg) rotateY(calc(var(--ry, 0deg) * 2)) rotateZ(calc(var(--rot, 0deg) * 2.4)) translateY(90px) translateZ(-120px) scale(0.68);
+  }
+  65% {
+    opacity: 1;
+    transform: perspective(1000px) rotateX(4deg) rotateY(calc(var(--ry, 0deg) * -0.6)) rotateZ(calc(var(--rot, 0deg) * 0.5)) translateY(calc(var(--ty, 0px) - 14px)) translateZ(0) scale(1.045);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(1000px) rotateX(7deg) rotateY(var(--ry, 0deg)) rotateZ(var(--rot, 0deg)) translateY(var(--ty, 0px));
+  }
+}
+
+/* playful hover "dance": a quick, looping wiggle - swapped in for the calm
+   idle float while the pointer/focus is on the card. */
+@keyframes gjrsCardDance {
+  0%   { transform: perspective(1000px) rotateX(9deg) rotateY(var(--ry, 0deg)) rotateZ(calc(var(--rot, 0deg) - 7deg)) translateY(calc(var(--ty, 0px) - 20px)) scale(1.05); }
+  25%  { transform: perspective(1000px) rotateX(4deg) rotateY(calc(var(--ry, 0deg) * -1.4)) rotateZ(calc(var(--rot, 0deg) + 9deg)) translateY(calc(var(--ty, 0px) - 28px)) scale(1.07); }
+  50%  { transform: perspective(1000px) rotateX(13deg) rotateY(calc(var(--ry, 0deg) * 1.2)) rotateZ(calc(var(--rot, 0deg) - 9deg)) translateY(calc(var(--ty, 0px) - 18px)) scale(1.06); }
+  75%  { transform: perspective(1000px) rotateX(5deg) rotateY(calc(var(--ry, 0deg) * -1.2)) rotateZ(calc(var(--rot, 0deg) + 7deg)) translateY(calc(var(--ty, 0px) - 26px)) scale(1.07); }
+  100% { transform: perspective(1000px) rotateX(9deg) rotateY(var(--ry, 0deg)) rotateZ(calc(var(--rot, 0deg) - 7deg)) translateY(calc(var(--ty, 0px) - 20px)) scale(1.05); }
+}
+
+/* higher specificity than the .is-in animation rule below (which also sets
+   animation-name/-delay/etc.), so the dance wins over the idle float while
+   hovered/focused. gjrsCardIn stays first in the list, with the exact same
+   duration/delay/timing-function/fill-mode as the idle rule below - if it
+   dropped out of the list on hover, un-hovering would make it "reappear"
+   as a brand new animation and restart from its 0% keyframe (opacity: 0),
+   flashing the card invisible for its delay + into its run. Keeping it
+   present and unchanged means only the second slot (float <-> dance)
+   actually swaps. */
+.js .gjrs.is-in .gjrs__tier[data-rv]:hover,
+.js .gjrs.is-in .gjrs__tier[data-rv]:focus-within,
+.gjrs__tier:hover, .gjrs__tier:focus-within {
+  animation-name: gjrsCardIn, gjrsCardDance;
+  animation-duration: 1s, 1.1s;
+  animation-timing-function: cubic-bezier(0.22, 1.4, 0.36, 1), ease-in-out;
+  animation-iteration-count: 1, infinite;
+  animation-delay: var(--d, 0s), 0s;
+  animation-fill-mode: both, none;
+  box-shadow: 0 34px 58px rgba(90, 65, 20, 0.22), 0 8px 20px rgba(90, 65, 20, 0.1);
+  border-color: rgba(212, 175, 55, 0.55);
+  z-index: 5;
+}
+
+.gjrs__tier-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: linear-gradient(100deg, #d9b563, #b28d3d 60%, #caa452);
+  color: #33270f;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 8px 16px rgba(90, 65, 20, 0.22);
+}
+
+.gjrs__tier-amt {
+  margin: 12px 0 2px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(28px, 2.6vw, 36px);
+  line-height: 1;
+  color: var(--gjrs-ink);
+}
+
+.gjrs__tier-amt span { font-size: 0.55em; font-weight: 600; vertical-align: 0.15em; margin-right: 2px; color: var(--gjrs-gold); }
+
+.gjrs__tier-per {
+  margin: 0 0 14px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #8a6f3a;
+}
+
+.gjrs__tier-meta {
+  margin: 0 0 16px;
+  font-size: 12.5px;
+  color: #6f6046;
+}
+
+.gjrs__tier-total {
+  margin: 0;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(169, 133, 60, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.gjrs__tier-total span { font-size: 10.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #8a6f3a; }
+.gjrs__tier-total b { font-family: "Cormorant Garamond", Georgia, serif; font-size: clamp(18px, 1.6vw, 22px); font-weight: 700; color: var(--gjrs-ink); }
+
+/* --------------------------------------------------------------------- cta
+   Matches the site's standard "Enquire Now" ghost-outline CTA. */
+.gjrs__cta-wrap { position: relative; text-align: center; margin: 0 0 14px; z-index: 2; }
+
+.gjrs__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8vw;
+  padding: clamp(10px, 0.95vw, 16px) clamp(18px, 1.8vw, 30px);
+  border: 1px solid rgba(169, 133, 60, 0.75);
+  color: var(--gjrs-ink);
+  background: rgba(255, 252, 244, 0.4);
+  text-decoration: none;
+  font-size: clamp(10px, 0.82vw, 13.5px);
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: background 0.35s ease, color 0.35s ease, border-color 0.35s ease;
+}
+
+.gjrs__cta:hover, .gjrs__cta:focus-visible { background: var(--gjrs-gold); border-color: var(--gjrs-gold); color: #fffcf4; }
+
+.gjrs__note {
+  position: relative;
+  text-align: center;
+  margin: 0;
+  font-size: 12px;
+  color: #8a7a5c;
+  z-index: 2;
+}
+
+/* ------------------------------------------------------------ reveal system */
+.js .gjrs [data-rv] {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.85s ease var(--d, 0s), transform 1s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0s);
+}
+
+.js .gjrs:not(.is-in) [data-rv] { opacity: 0; transform: translateY(16px); }
+
+/* the tier cards animate rather than transition (gjrsCardIn/Float own their
+   opacity + transform), so they need to opt out of the generic rule above
+   - both the "hidden" state and the plain transition are overridden here
+   with the higher-specificity .gjrs__tier selector. */
+.js .gjrs .gjrs__tier[data-rv],
+.js .gjrs:not(.is-in) .gjrs__tier[data-rv] {
+  transition: none;
+}
+
+.js .gjrs:not(.is-in) .gjrs__tier[data-rv] {
+  opacity: 0;
+  transform: perspective(1000px) rotateX(-38deg) rotateY(calc(var(--ry, 0deg) * 2)) rotateZ(calc(var(--rot, 0deg) * 2.4)) translateY(90px) translateZ(-120px) scale(0.68);
+}
+
+.js .gjrs.is-in .gjrs__tier[data-rv] {
+  opacity: 1;
+  animation-name: gjrsCardIn, gjrsCardFloat;
+  animation-duration: 1s, 6.5s;
+  animation-timing-function: cubic-bezier(0.22, 1.4, 0.36, 1), ease-in-out;
+  animation-delay: var(--d, 0s), calc(var(--d, 0s) + 1s);
+  animation-iteration-count: 1, infinite;
+  animation-fill-mode: both, none;
+}
+
+/* --------------------------------------------------------------- compact */
+@media (max-width: 1023px) {
+  .gjrs__band { padding: 52px clamp(20px, 6vw, 56px) 44px; }
+
+  .gjrs__lotus { font-size: 20px; margin-bottom: 8px; }
+  .gjrs__kicker { font-size: 11px; gap: 12px; margin-bottom: 10px; }
+  .gjrs__kicker::before, .gjrs__kicker::after { width: 28px; }
+  .gjrs__h2 { font-size: clamp(32px, 8.6vw, 44px); margin-bottom: 8px; }
+  .gjrs__sub { font-size: clamp(13.5px, 3.7vw, 16px); }
+  .gjrs__sub::after { font-size: 10px; margin-top: 8px; }
+
+  .gjrs__tiers { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+}
+
+@media (max-width: 560px) {
+  .gjrs__tiers { grid-template-columns: 1fr; max-width: 320px; }
+}
+
+/* ------------------------------------------------------- reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .js .gjrs [data-rv] { transition: opacity 0.6s ease !important; transform: none !important; }
+  .js .gjrs .gjrs__tier[data-rv],
+  .js .gjrs:not(.is-in) .gjrs__tier[data-rv],
+  .js .gjrs.is-in .gjrs__tier[data-rv],
+  .js .gjrs.is-in .gjrs__tier[data-rv]:hover,
+  .js .gjrs.is-in .gjrs__tier[data-rv]:focus-within,
+  .gjrs__tier:hover, .gjrs__tier:focus-within {
+    animation: none !important;
+    transform: none !important;
+    transition: opacity 0.6s ease !important;
+  }
+}

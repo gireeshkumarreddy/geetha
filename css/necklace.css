@@ -80,6 +80,7 @@
   left: 49.93%;
   top: 5.79%;
   width: 26.82%;
+  margin: 0;
   z-index: 2;
 }
 
@@ -356,11 +357,12 @@
 /* ------------------------------------------------------------- scroll cue */
 .gjn__cue {
   position: absolute;
-  left: 64.5vw;
-  top: 27svh;
+  left: clamp(16px, 2.4vw, 40px);
+  top: auto;
+  bottom: 7svh;
   z-index: 3;
   color: #6b5936;
-  text-align: center;
+  text-align: left;
 }
 
 .gjn__cue-text {
@@ -573,7 +575,7 @@
   .gjn__rule { margin-bottom: 10px; }
   .gjn__rule i { flex-basis: 90px; }
   .gjn__sub { font-size: 11px; margin-bottom: 12px; }
-  .gjn__desc { font-size: clamp(14px, 3.8vw, 16px); margin-bottom: 18px; }
+  .gjn__desc { display: none; }
   .gjn__cta { padding: 12px 22px; font-size: 11px; gap: 8px; }
 
   .gjn__specs {

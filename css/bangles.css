@@ -598,14 +598,17 @@
   pointer-events: none;
 }
 
-.gjbn__cards li.is-active figure {
+.gjbn__cards li:hover figure,
+.gjbn__cards li:focus-visible figure {
   box-shadow: 0 16px 32px rgba(140, 100, 45, 0.22);
   translate: 0 -4px;
 }
 
 .gjbn__cards li figure { transition: box-shadow 0.45s ease, translate 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
-.gjbn__cards li.is-active .gjbn__card-img::before { border-color: rgba(190, 152, 70, 0.85); }
-.gjbn__cards li.is-active h4 { color: var(--gjbn-brown); }
+.gjbn__cards li:hover .gjbn__card-img::before,
+.gjbn__cards li:focus-visible .gjbn__card-img::before { border-color: rgba(190, 152, 70, 0.85); }
+.gjbn__cards li:hover h4,
+.gjbn__cards li:focus-visible h4 { color: var(--gjbn-brown); }
 
 .gjbn__cards figure {
   margin: 0;
@@ -688,74 +691,60 @@
 .js .gjbn .gjbn__node[data-at] { transform: translate(-50%, -50%) scale(0.4); }
 .js .gjbn .gjbn__node[data-at].is-past { transform: translate(-50%, -50%); }
 
-/* gold-phase (closed-state) elements leaving on open - desktop timeline only */
-@media (min-width: 1024px) {
-  .js .gjbn [data-until].is-out {
-    opacity: 0 !important;
-    pointer-events: none;
-    transition: opacity 0.6s ease, transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+/* gold-phase (closed-state) elements leaving on open (pinned timeline, both desktop and mobile) */
+.js .gjbn [data-until].is-out {
+  opacity: 0 !important;
+  pointer-events: none;
+  transition: opacity 0.6s ease, transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* --------------------------------------------------------------- compact */
 @media (max-width: 1023px) {
-  .gjbn__track { height: auto; }
-
-  .gjbn__stage {
-    position: static;
-    height: auto;
-    overflow: visible;
-    padding-bottom: 36px;
-  }
-
-  .gjbn__view {
-    position: relative;
-    height: clamp(320px, 52svh, 500px);
-    overflow: hidden;
-  }
-
-  .gjbn__scene {
-    width: max(100%, calc(clamp(320px, 52svh, 500px) * 1.7778));
-    top: 50%;
-  }
-
+  /* the section stays pinned here too (same track/stage mechanism as
+     desktop, inherited unchanged below), and the gold→silver material
+     transform now plays in the same single scene instead of a separate
+     always-visible "silver chapter" block underneath - see the removed
+     second mobile block below - so scrolling only moves past this section
+     once that sequence has actually finished */
   .gjbn__copy {
-    position: relative;
-    inset: auto;
+    left: 16px;
+    top: 5svh;
     width: auto;
-    padding: 46px clamp(20px, 6vw, 56px) 22px;
+    max-width: 230px;
+    padding: 10px 14px;
+    background: linear-gradient(155deg, rgba(255, 252, 244, 0.82), rgba(255, 252, 244, 0.32) 70%);
+    border-radius: 10px;
+    backdrop-filter: blur(2px);
   }
 
-  .gjbn__eyebrow { font-size: 11px; margin-bottom: 10px; }
-  .gjbn__title { font-size: clamp(30px, 7.8vw, 44px); margin-bottom: 10px; }
-  .gjbn__desc { font-size: clamp(14px, 3.8vw, 16px); margin-bottom: 18px; }
-  .gjbn__cta { padding: 12px 22px; font-size: 11px; gap: 8px; }
+  .gjbn__eyebrow { font-size: 10px; margin-bottom: 8px; }
+  .gjbn__title { font-size: clamp(24px, 7vw, 34px); margin-bottom: 8px; }
+  .gjbn__desc { display: none; }
+  .gjbn__cta { padding: 10px 18px; font-size: 10px; gap: 6px; }
 
-  .gjbn__aside {
-    position: relative;
-    inset: auto;
-    width: auto;
-    padding: 28px clamp(20px, 6vw, 56px) 6px;
-  }
-
-  .gjbn__aside h3 { font-size: 22px; }
-  .gjbn__aside > p { font-size: 14px; }
-  .gjbn__aside li { font-size: 13.5px; }
-  .gjbn__tile { flex-basis: 42px; height: 42px; }
-  .gjbn__quote { font-size: 19px; }
+  /* the secondary feature list is desktop-only real estate - no room for it
+     alongside the copy + cards on a pinned mobile stage without crowding */
+  .gjbn__aside { display: none; }
 
   .gjbn__cards {
-    position: relative;
-    left: auto;
-    bottom: auto;
-    translate: 0 0;
+    left: 16px;
+    right: 16px;
+    bottom: 2svh;
     width: auto;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    padding: 26px clamp(20px, 6vw, 56px) 0;
+    translate: 0 0;
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 10px 4px 16px;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+    scrollbar-width: none;
   }
 
-  .gjbn__cards li:last-child { grid-column: 1 / -1; }
+  .gjbn__cards::-webkit-scrollbar { display: none; }
+  .gjbn__cards li { flex: 0 0 108px; }
+  .gjbn__cards h4 { font-size: 10px; }
+  .gjbn__cards small { display: none; }
   .gjbn__cue, .gjbn__side, .gjbn__dots, .gjbn__arrow { display: none; }
   .gjbn__alabel, .gjbn__node, .gjbn__arc { display: none; }
 }
@@ -870,8 +859,10 @@
 .gjbn__aside--s .gjbn__quote { color: #45403a; }
 
 /* ---- silver collection cards: refined pop/reveal (spec §12) */
-.gjbn__cards--s li.is-active .gjbn__card-img::before { border-color: rgba(140, 138, 132, 0.9); }
-.gjbn__cards--s li.is-active h4 { color: #3d3831; }
+.gjbn__cards--s li:hover .gjbn__card-img::before,
+.gjbn__cards--s li:focus-visible .gjbn__card-img::before { border-color: rgba(140, 138, 132, 0.9); }
+.gjbn__cards--s li:hover h4,
+.gjbn__cards--s li:focus-visible h4 { color: #3d3831; }
 .gjbn__cards--s figure { border-color: rgba(150, 145, 135, 0.4); }
 
 .js .gjbn .gjbn__cards--s li[data-at] { transform: translateY(26px) scale(0.88); }
@@ -895,30 +886,9 @@
 
 /* the mobile-only silver scene block (desktop shows the transformation in
    the main pinned scene instead) */
+/* the duplicate mobile-only silver block stays unused now that mobile plays
+   the same in-place crossfade as desktop (see the compact media query above) */
 .gjbn__view--s { display: none; }
-
-@media (max-width: 1023px) {
-  /* mobile recomposition: the gold view stays gold; the silver chapter
-     follows as its own flow block (nothing folds away on mobile) */
-  .gjbn__view:not(.gjbn__view--s) .gjbn__bg8,
-  .gjbn__view:not(.gjbn__view--s) .gjbn__bangle--s,
-  .gjbn__sheen { display: none; }
-
-  .gjbn__view--s {
-    display: block;
-    position: relative;
-    height: clamp(320px, 52svh, 500px);
-    overflow: hidden;
-    margin-top: 6px;
-  }
-
-  .gjbn__view--s .gjbn__bg8 { opacity: 1; translate: 0 0; }
-  .gjbn__view--s .gjbn__bg8 img { transform: none; }
-  .gjbn__view--s .gjbn__bangle--s { translate: 0 0; }
-  .gjbn__view--s .gjbn__bangle--s > div { opacity: 1; transform: none; }
-  .gjbn__view--s .gjbn__bangle--s picture { filter: none; }
-  .gjbn__copy--s { padding-top: 40px; }
-}
 
 @media (prefers-reduced-motion: reduce) {
   .gjbn__sheen { display: none; }
